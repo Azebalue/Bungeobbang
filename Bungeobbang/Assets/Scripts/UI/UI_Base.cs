@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
+   
 public class UI_Base : MonoBehaviour
 {
     // GameObject를 Type별로 관리
@@ -28,12 +28,12 @@ public class UI_Base : MonoBehaviour
             obj[i] = FindChild(parent, names[i]); 
         }
 
-        //딕셔너리에 추가 [키: 자식 타입, 값: 자식 배열]
-        dic.Add(typeof(T), obj); 
+        AddDictionaryValue<T>(obj);
 
     }
 
-    protected void BindChild<T>(string parentName, string childName)
+    //
+    protected void BindChild<T>(T parentEnum, string childName)
     {
 
     }
@@ -43,18 +43,17 @@ public class UI_Base : MonoBehaviour
     //parent 오브젝트 산하에서 childname을 찾아서 반환하는 함수
     protected GameObject FindChild(GameObject parent, string childname)
     {
-        //부모 산하의 
+        //부모 산하의 모든 자식들을 순차 탐색 
         for(int curChild = 0; curChild < parent.transform.childCount; curChild++)
         {
             Transform child = parent.transform.GetChild(curChild);
 
+            //찾으면 해당 자식 객체 반환
             if (child.name == childname)
-            {
-                //Debug.Log($"{childname}을 찾아서 반환.");
                 return child.gameObject;
-            }
         }
 
+        //예외
         Debug.LogWarning($"{childname}을 못찾아서 null반환.");
         return null;
     }
@@ -118,7 +117,34 @@ public class UI_Base : MonoBehaviour
         return Get<TextMeshProUGUI>(index);
     }
     #endregion
+    //딕셔너리에 T타입 값배열 저장
+    protected void AddDictionaryValue<T>(GameObject[] obj)
+    {
+        //딕셔너리에 추가 [키: 자식 타입, 값: 자식 배열]
+        if (dic.ContainsKey(typeof(T)))
+        {
+            //키가 이미 있기에, 기존 배열 확장&값 추가한 후 배열 등록
+            int arrSize = obj.Length + dic[typeof(T)].Length; //새 배열 크기 계산
+            GameObject[] newArr = new GameObject[arrSize]; //새 배열 생성
 
+            //배열 채우기
+            for(int i = 0; i < arrSize; ++i)
+            {
+                GameObject element;
+                if(i < dic[typeof(T)].Length)
+                    element = dic[typeof(T)].GetValue(i) as GameObject;
+                else
+                    element = obj[i];
+
+                newArr[i] = element;
+            }
+        }
+        else
+        {
+            //키와 값 신규 등록
+            dic.Add(typeof(T), obj);
+        }
+    }
     protected void AddEvent(GameObject go, EventHandler eventHandler)
     {
 
