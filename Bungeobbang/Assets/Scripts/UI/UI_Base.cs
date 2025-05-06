@@ -52,13 +52,8 @@ public class UI_Base : MonoBehaviour
         for(int i = 0; i < names.Length; i++) 
         {
 
-            obj[i] = FindComponent<T>(ref names[i], parent) ; 
-
-            if(obj[i] == null)
-            {
-
-            }
-
+            obj[i] = FindComponent<T>(ref names[i], parent) ;
+            //Util.checkNull(obj[i]);
         }
 
         AddDictionaryValue<T>(obj);
@@ -67,11 +62,12 @@ public class UI_Base : MonoBehaviour
 
     //첫 번째 인수 parentEnum은 이미 바인딩 되어야, 산하의 자식 바인딩 할 수 있음
     protected void BindChild<parentT, childT>(Type parentEnum, string childName)
+        where parentT : UnityEngine.Object
         where childT : UnityEngine.Object
     {
         UnityEngine.Object[] value = new UnityEngine.Object[Util.GetEnumSize(parentEnum)];
 
-        //부모 오브젝트가 바인딩되어 있지 않은 경우 예외처리
+        //부모 오브젝트가 바인딩되어 있지 않은 경우 체크
         if (dic.ContainsKey(typeof(parentT)) == false)
         {
             Debug.LogWarning($"{typeof(parentT)}타입이 바인딩 되지 않았음");
@@ -81,10 +77,36 @@ public class UI_Base : MonoBehaviour
         //각 부모의 자식들 탐색
         for (int i = 0; i < Util.GetEnumSize(parentEnum); ++i)
         {
-            GameObject parent = dic[typeof(parentT)][i] as GameObject; //바인딩된 부모 찾기
-            UnityEngine.Object child = FindComponent<childT>(ref childName, parent); //부모의 자식 찾기
+            GameObject parent = (dic[typeof(parentT)][i] as Component).gameObject; //바인딩된 부모 찾기
+            Util.checkNull(parent);
+            //Debug.LogWarning($"{parent.name}");
+
+            UnityEngine.Object child = null;
+
+            //찾는 자식 오브젝트인 경우
+            if (typeof(childT) == typeof(GameObject))
+            {
+                child = FindObject(ref childName, parent);
+            }
+            else
+            {
+                child = FindComponent<childT>(ref childName, parent); //부모의 자식 찾기
+
+            }
 
             value[i] = child; //배열 채우기
+
+        }
+
+        for (int i = 0; i < value.Length; ++i)
+        {
+            
+            GameObject obj = value[i] as GameObject;    
+            if(obj != null)
+            {
+                Debug.Log($"{obj.gameObject.name}");
+
+            }
 
         }
 
@@ -168,68 +190,6 @@ public class UI_Base : MonoBehaviour
         return result;
     }
 
-    //parent 오브젝트 산하에서 childname을 찾아서 반환하는 함수
-/*    protected T FindChild<T>(GameObject parent, string childname)
-        where T : UnityEngine.Object
-    {
-*//*        //GameObject pr = parent as GameObject;
-        //부모 산하의 모든 자식들을 순차 탐색 
-        for (int curChild = 0; curChild < parent.transform.childCount; curChild++)
-        {
-            Transform child = parent.transform.GetChild(curChild);
-
-            //찾으면 해당 자식 객체 반환
-            if (child.name == childname)
-            {
-                //게임 오브젝트를 찾는 경우
-                if (typeof(T) == typeof(GameObject))
-                {
-                    return child.gameObject as T;
-                    return child.gameObject as T;
-
-                }
-                else
-                {
-                    //게임 컴포넌트를 찾는 경우
-                    return child.gameObject.GetComponent<T>();
-                }
-            }
-        }*//*
-
-        T result = null;    
-        if(typeof(T) == typeof(GameObject))
-        {
-            result = FindObject(ref childname, parent) as T;
-        }
-        else
-        {
-            result = FindCom
-        }
-
-        //예외 체크
-        Util.checkNull(result);
-
-        return result;
-    }*/
-
-
-    /*    protected void Find(GameObject go, string path)
-        {
-            string[] tokens = path.Split('/'); //�������� ����
-
-            Transform current = GameObject.Find(tokens[0]).transform;
-            if (tokens.Length > 1)
-            {
-                for (int index = 1; index < tokens.Length; index++)
-                {
-                    for (int _cur = 0; _cur < current.transform.childCount; _cur++)
-                    {
-
-                    }
-                }
-            }
-        }*/
-
     #endregion
 
     #region Get계열함수
@@ -241,8 +201,6 @@ public class UI_Base : MonoBehaviour
 
         if(dic.TryGetValue(typeof(T), out UnityEngine.Object[] value))
         {
-            Debug.LogWarning($"{typeof(T)}타입 {index}번째 널이 아니다.");
-
             if (value[index] == null)
             {
                 Debug.LogWarning($"{typeof(T)}타입 value[{index}] 널.");
@@ -279,7 +237,7 @@ public class UI_Base : MonoBehaviour
             Debug.LogWarning($"NULL : TextMeshProUGUI[{index}]");
             return null;
         }
-        return Get<TextMeshProUGUI>(index).GetComponent<TextMeshProUGUI>();
+        return Get<TextMeshProUGUI>(index);
         //return TMP.GetComponent<TextMeshProUGUI>();
     }
     #endregion
