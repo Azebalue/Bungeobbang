@@ -41,9 +41,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: 1
+  - name: background
     uniqueID: 3889868047
     locked: 0
-  - name: contents
+  - name: preback
     uniqueID: 3165113163
+    locked: 0
+  - name: contents
+    uniqueID: 1907776543
+    locked: 0
+  - name: contents
+    uniqueID: 4272548855
     locked: 0

@@ -2,46 +2,25 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    float startPos;
-    float endPos;
+    bool isUpper = true;
+    float posY = 4f; //상단
 
-    float gap
+    private void Start()
     {
-        get { return endPos - startPos; }
+        transform.position = new Vector3(0, posY, -10);
     }
 
-    [SerializeField] float standard = 100;
-
-    void Start()
+    public void toggleCamera()
     {
-        
-    }
-
-    void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
+        if (isUpper == true)
         {
-            startPos = Input.mousePosition.y;
+            transform.position = new Vector3(0, posY, -10);
+            isUpper = false;
         }
-        else if (Input.GetMouseButtonUp(0))
+        else
         {
-            endPos = Input.mousePosition.y;
-            //Debug.Log(gap);
-
-            //카메라 이동
-            if (gap > standard)
-            {
-                Debug.Log("카메라 위로");
-
-            }
-            else if (gap < standard)
-            {
-                Debug.Log("카메라 아래로");
-
-
-            }
+            transform.position = new Vector3(0, -posY, -10);
+            isUpper = true;
         }
-
-
     }
 }

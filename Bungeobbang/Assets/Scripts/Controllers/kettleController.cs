@@ -4,10 +4,10 @@ public class kettleController : MonoBehaviour
 {
     bool isSelected = false;
 
-    Vector3 moveDir = new Vector3(0, 2, 0);
+    Vector3 moveDir = new Vector3(0, 1, 0);
 
     //Vector3 originSpinDir = new Vector3(0, 0, -30);
-    Vector3 spinDir = new Vector3(0, 0, 45);
+    Vector3 spinDir = new Vector3(0, 0, -45);
 
     int originSortingOrder;
     int maxSortingOrder = 10;
@@ -33,7 +33,7 @@ public class kettleController : MonoBehaviour
     void selectKettle()
     {
         transform.position += moveDir; //위로 올리기
-        transform.eulerAngles = spinDir; //약간 회전
+        //transform.eulerAngles = spinDir; //약간 회전
         GetComponent<SpriteRenderer>().sortingOrder = maxSortingOrder;
         isSelected = true;
     }
@@ -41,7 +41,7 @@ public class kettleController : MonoBehaviour
     void deSelectKettle()
     {
         transform.position -= moveDir; 
-        transform.eulerAngles = new Vector3(0,0,0);
+        //transform.eulerAngles = new Vector3(0,0,0);
         GetComponent<SpriteRenderer>().sortingOrder = originSortingOrder;
         isSelected = false;
     }
