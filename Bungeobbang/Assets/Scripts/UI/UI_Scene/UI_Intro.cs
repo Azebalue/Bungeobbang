@@ -29,12 +29,6 @@ public class UI_Intro : UI_Base
     protected override void Get()
     {
         string[] BtnNames = Enum.GetNames(typeof(Buttons));
-        for(int i = 0; i < BtnNames.Length; i++)
-        {
-            GetTMP(i).text = BtnNames[i];
-            Debug.Log($"{i}:{GetTMP(i).text}:{BtnNames[i]}");
-
-        }
 
     }
 

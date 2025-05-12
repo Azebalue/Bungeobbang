@@ -4,6 +4,7 @@ public class CameraController : MonoBehaviour
 {
     float startPos;
     float endPos;
+
     float gap
     {
         get { return endPos - startPos; }
@@ -25,7 +26,7 @@ public class CameraController : MonoBehaviour
         else if (Input.GetMouseButtonUp(0))
         {
             endPos = Input.mousePosition.y;
-            Debug.Log(gap);
+            //Debug.Log(gap);
 
             //카메라 이동
             if (gap > standard)
