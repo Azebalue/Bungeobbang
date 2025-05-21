@@ -3,23 +3,24 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     bool isUpper = true;
-    float posY = 4f; //»ó´Ü
+    Vector3 cameraUpPos = new Vector3(0, 4.5f, -10);
+    Vector3 cameraDownPos = new Vector3(0, -4.3f, -10);
 
     private void Start()
     {
-        transform.position = new Vector3(0, posY, -10);
+        transform.position = cameraUpPos;
     }
 
     public void toggleCamera()
     {
         if (isUpper == true)
         {
-            transform.position = new Vector3(0, posY, -10);
+            transform.position = cameraUpPos;
             isUpper = false;
         }
         else
         {
-            transform.position = new Vector3(0, -posY, -10);
+            transform.position = cameraDownPos;
             isUpper = true;
         }
     }

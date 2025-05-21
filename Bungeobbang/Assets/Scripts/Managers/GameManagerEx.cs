@@ -1,18 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class GameManagerEx : MonoBehaviour
+[Serializable] 
+enum  Collections
 {
-    // Start is called before the first frame update
-    void Start()
+    
+}
+
+[Serializable]
+public class GameData
+{
+    public int day;
+
+    public int money;
+    public int gold;
+    public int spritPiece;
+
+    //도감
+    //재료 해금 상태
+}
+
+public class GameManagerEx 
+{
+    GameData gameData = new GameData();
+    public GameData curData
     {
-        
+        get { return gameData; }
+        set { gameData = value; }
     }
 
-    // Update is called once per frame
-    void Update()
+    public void InitGame()
     {
-        
+        curData.day = 0;
     }
+
+
 }

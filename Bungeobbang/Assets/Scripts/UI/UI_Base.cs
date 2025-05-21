@@ -1,14 +1,15 @@
 using System;
 using System.Collections.Generic;
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
    
 public class UI_Base : MonoBehaviour
 {
     // GameObject를 Type별로 관리
-    protected Dictionary<Type, UnityEngine.Object[]> dic = new Dictionary<Type, UnityEngine.Object[]>();
+    protected Dictionary<Type, UnityEngine.Object[]> dic = new();
+    //protected Dictionary<Type, UnityEngine.Object[]> dic = new Dictionary<Type, UnityEngine.Object[]>();
 
     protected void Start()
     {
@@ -40,7 +41,7 @@ public class UI_Base : MonoBehaviour
         where T : UnityEngine.Object
     {
         //하이어라키에서 부모를 이름으로 찾기
-        GameObject parent = FindObject(ref parentName);
+        GameObject parent = Util.FindObject(ref parentName);
 
         //찾을 자식 객체 이름을 string배열로 저장
         string[] names = Enum.GetNames(enumName);
@@ -52,7 +53,7 @@ public class UI_Base : MonoBehaviour
         for(int i = 0; i < names.Length; i++) 
         {
 
-            obj[i] = FindComponent<T>(ref names[i], parent) ;
+            obj[i] = Util.FindComponent<T>(ref names[i], parent) ;
             //Util.checkNull(obj[i]);
         }
 
@@ -81,16 +82,16 @@ public class UI_Base : MonoBehaviour
             Util.checkNull(parent);
             //Debug.LogWarning($"{parent.name}");
 
-            UnityEngine.Object child = null;
+            UnityEngine.Object child;
 
             //찾는 자식 오브젝트인 경우
             if (typeof(childT) == typeof(GameObject))
             {
-                child = FindObject(ref childName, parent);
+                child = Util.FindObject(ref childName, parent);
             }
             else
             {
-                child = FindComponent<childT>(ref childName, parent); //부모의 자식 찾기
+                child = Util.FindComponent<childT>(ref childName, parent); //부모의 자식 찾기
 
             }
 
@@ -104,7 +105,7 @@ public class UI_Base : MonoBehaviour
             GameObject obj = value[i] as GameObject;    
             if(obj != null)
             {
-                Debug.Log($"{obj.gameObject.name}");
+                Debug.Log($"{obj.name}");
 
             }
 
@@ -114,83 +115,7 @@ public class UI_Base : MonoBehaviour
     }
     #endregion
 
-    #region Find계열함수
-
-    //게임 오브젝트를 찾아서 반환하는 메서드(탐색할 부모 지정 가능)
-    protected GameObject FindObject(ref string target, UnityEngine.Object parent = null)
-    {
-        //반환할 값
-        GameObject go = null;
-
-        //부모 없이 경우, 하이어라키 전체에서 검색
-        if(parent == null)
-        {
-            //하이어라키에서 이름으로 target 찾기
-            go = GameObject.Find($"{target}");
-        }
-        //부모 지정한 경우, 부모 산하에서 검색
-        else
-        {
-            GameObject _parent = parent as GameObject;
-
-            //null 체크
-            Util.checkNull(_parent);
-
-            //지정한 부모 산하에서 순차 탐색
-            for (int i = 0; i < _parent.transform.childCount; ++i)
-            {
-                Transform child = _parent.transform.GetChild(i);
-                if(child.name == target)
-                {
-                    go = child.gameObject;
-                    break;
-                }
-            }
-
-        }
-
-        Util.checkNull(go);
-        return go;
-
-    }
-
-    //게임 오브젝트의 컴포넌트를 반환하는 메서드(탐색할 부모 지정 가능)
-    protected T FindComponent<T>(ref string target, UnityEngine.Object parent = null)
-        where T : UnityEngine.Object
-    {
-        T result = null;
-        if(parent == null)
-        {
-            result = FindAnyObjectByType<T>().GetComponent<T>();
-
-        }
-        else
-        {
-
-            GameObject _parent = parent as GameObject;
-
-            //null 체크
-            Util.checkNull(_parent);
-
-            //지정한 부모 산하에서 순차 탐색
-            for (int i = 0; i < _parent.transform.childCount; ++i)
-            {
-                Transform child = _parent.transform.GetChild(i);
-                if (child.name == target)
-                {
-                    result = child.gameObject.GetComponent<T>();
-                    break;
-                }
-            }
-
-
-        }
-
-        Util.checkNull(result);
-        return result;
-    }
-
-    #endregion
+    
 
     #region Get계열함수
 
@@ -285,8 +210,11 @@ public class UI_Base : MonoBehaviour
     }
 
     //특정 UI오브젝트에 상호작용 기능 붙이는 메서드
-    protected void AddEvent(GameObject go, EventHandler eventHandler)
+    protected void AddEvent(GameObject go, Action<PointerEventData> action)
     {
+        UI_EventHandler evt = go.GetComponent<UI_EventHandler>();
 
+        evt.OnClickHandler -= action; //미리 있을까봐 빼기
+        evt.OnClickHandler += action; //액션 등록
     }
 }

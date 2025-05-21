@@ -3,7 +3,9 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - kettle
+  - filling
   layers:
   - Default
   - TransparentFX
@@ -44,12 +46,21 @@ TagManager:
   - name: background
     uniqueID: 3889868047
     locked: 0
-  - name: preback
+  - name: prebackground
     uniqueID: 3165113163
     locked: 0
-  - name: contents
+  - name: 3
     uniqueID: 1907776543
     locked: 0
-  - name: contents
+  - name: 4
     uniqueID: 4272548855
+    locked: 0
+  - name: Batter
+    uniqueID: 280576007
+    locked: 0
+  - name: Filling
+    uniqueID: 2410063691
+    locked: 0
+  - name: fishBun
+    uniqueID: 1986304207
     locked: 0
