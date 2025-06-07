@@ -1,47 +1,68 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using TMPro;
    
-public class UI_Base : MonoBehaviour
+public abstract class UI_Base : MonoBehaviour
 {
     // GameObject를 Type별로 관리
     protected Dictionary<Type, UnityEngine.Object[]> dic = new();
-    //protected Dictionary<Type, UnityEngine.Object[]> dic = new Dictionary<Type, UnityEngine.Object[]>();
 
     protected void Start()
     {
         Init();
     }
 
-    #region Init()메서드
-    protected void Init()
+    protected abstract void Init();
+
+    //특정 UI오브젝트에 상호작용 기능 붙이는 메서드
+    public static void AddEvent(GameObject go, Action action)
     {
-        Bind();
-        Get();
+        UI_EventHandler evt = Util.GetOrAddComponent<UI_EventHandler>(go);
+
+        evt.OnClickHandler -= action; //액션 중복 발생 방지
+        evt.OnClickHandler += action; //액션 등록
+    }
+    protected void SetWorldUI()
+    {
+        Canvas canvas = gameObject.GetComponent<Canvas>();
+
+        canvas.renderMode = RenderMode.WorldSpace;
+        canvas.worldCamera = Camera.main;
+        canvas.sortingLayerName = "UI";
     }
 
-    protected virtual void Bind()
+    #region Bind계열 메서드
+    //기본 Bind 메서드
+    protected void Bind<T>(Type enumT)
+        where T : UnityEngine.Object
     {
 
+        //열거형 내용 다 string 배열로 추출
+        string[] names = Enum.GetNames(enumT);
+
+        //임시 배열 생성
+        int arrSize = name.Length; 
+        UnityEngine.Object[] objs = new UnityEngine.Object[arrSize];
+
+        //배열 채우기
+        for (int i = 0; i < names.Length; ++i)
+        {
+            objs[i] = Util.Find<T>(gameObject, names[i]);
+        }
+
+        //전역에 있는 딕셔너리에 값(타입-컴포넌트 배열) 채우기
+        dic.Add(typeof(T), objs);
     }
-    protected virtual void Get()
-    {
 
-    }
-
-    #endregion
-
-    #region Bind계열함수
-
-    //특정 부모 오브젝트 산하의 같은 타입의 자식obj들을 바인딩
+/*    너무 조잡한 거같음
+ *    //특정 부모 오브젝트 산하의 같은 타입의 자식obj들을 바인딩
     protected void BindChilds<T>(Type enumName, string parentName)
         where T : UnityEngine.Object
     {
         //하이어라키에서 부모를 이름으로 찾기
-        GameObject parent = Util.FindObject(ref parentName);
+        GameObject parent = Util.FindObject(parentName);
 
         //찾을 자식 객체 이름을 string배열로 저장
         string[] names = Enum.GetNames(enumName);
@@ -53,7 +74,7 @@ public class UI_Base : MonoBehaviour
         for(int i = 0; i < names.Length; i++) 
         {
 
-            obj[i] = Util.FindComponent<T>(ref names[i], parent) ;
+            obj[i] = Util.FindComponent<T>(names[i], parent) ;
             //Util.checkNull(obj[i]);
         }
 
@@ -87,11 +108,11 @@ public class UI_Base : MonoBehaviour
             //찾는 자식 오브젝트인 경우
             if (typeof(childT) == typeof(GameObject))
             {
-                child = Util.FindObject(ref childName, parent);
+                child = Util.FindObject(childName, parent);
             }
             else
             {
-                child = Util.FindComponent<childT>(ref childName, parent); //부모의 자식 찾기
+                child = Util.FindComponent<childT>(childName, parent); //부모의 자식 찾기
 
             }
 
@@ -112,12 +133,10 @@ public class UI_Base : MonoBehaviour
         }
 
         AddDictionaryValue<childT>(value);
-    }
+    }*/
     #endregion
 
-    
-
-    #region Get계열함수
+    #region Get계열 메서드
 
     //딕셔너리에서 특정 타입(T)의 값인 배열 인덱스에 접근해 게임 오브젝트 반환
     protected T Get<T>(int index) 
@@ -167,7 +186,10 @@ public class UI_Base : MonoBehaviour
     }
     #endregion
 
-    //딕셔너리에 T타입 값배열 저장하는 메서드
+
+/*    불필요
+ *    
+ *    //딕셔너리에 T타입 값배열 저장하는 메서드
     protected void AddDictionaryValue<T>(UnityEngine.Object[] obj)
         //where T : UnityEngine.Object
     {
@@ -201,20 +223,15 @@ public class UI_Base : MonoBehaviour
         }
 
 
+*/
+
+/*        
         //디버깅용 코드
         Debug.Log($"딕셔너리 내용");
         for (int i = 0; i < dic[typeof(T)].Length; ++i)
         {
             Debug.Log($"{typeof(T)} : {dic[typeof(T)].GetValue(i)}");
         }
-    }
 
-    //특정 UI오브젝트에 상호작용 기능 붙이는 메서드
-    protected void AddEvent(GameObject go, Action<PointerEventData> action)
-    {
-        UI_EventHandler evt = go.GetComponent<UI_EventHandler>();
-
-        evt.OnClickHandler -= action; //미리 있을까봐 빼기
-        evt.OnClickHandler += action; //액션 등록
-    }
+ */
 }

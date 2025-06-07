@@ -1,28 +1,47 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class UI_Game : UI_Base
 {
-    [SerializeField] TextMeshProUGUI day;
-    [SerializeField] TextMeshProUGUI time;
-
-    //시간은 10분단위로 표시
-    int _minute
-    {
-        get { return (Managers.Time.minute) % 10; }
+    #region 열거형
+    enum TMP {
+        dayText,
+        timeText
     }
 
-    protected override void Get()
+    enum Btns
     {
-        day.text = $"Day {Managers.Game.curData.day}";
+        toggleViewButton
+    }
+    #endregion
 
+    int minute
+    {
+        //시간은 10분단위로 표시
+        get { return Managers.Game.minute / 10; }
+    }
+
+
+    protected override void Init()
+    {
+        //바인딩
+        Bind<TextMeshProUGUI>(typeof(TMP));
+        Bind<Button>(typeof(Btns));
+
+        //데이터
+        GetTMP((int)TMP.dayText).text = $"Day {Managers.Game.CurData.day}";
+        GetButton((int)Btns.toggleViewButton).gameObject.AddEvent(CameraController.toggleCameraAction);
+    
+    
     }
 
     private void Update()
     {
-
-        time.text = ($"{Managers.Time.hour} : {_minute.ToString("D2")}");
+        //분은 10의 단위로만 바꿈
+        GetTMP((int)TMP.timeText).text = ($"{Managers.Game.hour} : {minute}0");
 
 
     }
+
 }

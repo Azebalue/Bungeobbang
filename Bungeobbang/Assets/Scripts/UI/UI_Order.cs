@@ -1,18 +1,44 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
-using UnityEngine;
+using System;
+using System.Collections.Generic;
+using UnityEngine.UI;
 
-public class UI_Order : MonoBehaviour
+public class UI_Order : UI_Base
 {
-    public TextMeshProUGUI orderText;
+    TextMeshProUGUI orderText;
+    public Slider slider;
 
-    private void Start()
+    protected override void Init()
     {
-        //orderText.text = $"<color = 6f4f28#>팥</color> 붕어빵 1개 주세요";
+        // 1. 캔버스 스페이스 렌더링 모드로 초기화
+        SetWorldUI();
+
+        // 2. 변수 맵핑
+        orderText = Util.Find<TextMeshProUGUI>(gameObject, "orderText");
+        slider = Util.Find<Slider>(gameObject, "slider");
+
+        // 3. 손님 분노 게이지 초기화
+        slider.value = 0f; 
+
     }
-    void Update()
+
+
+
+    public void SetOrderText(Dictionary<FillingType, int> orders)
     {
-        
+        //기존 텍스트 없애기
+        orderText.text = null;
+
+        foreach (var order in orders)
+            orderText.text += $"{order.Key} 맛 * {order.Value}개 \n";
+
     }
+
+    public void SetOrderText(int value )
+    {
+        slider.value = value;
+
+    }
+
+
 }

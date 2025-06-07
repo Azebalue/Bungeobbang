@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c95401f72b8d8454dbc07ea7b86d96dc
+guid: 6375e4d8d2dd8aa4493c30901efec3b5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: jeongHyun_0
+      name: HaYoung_0
       rect:
         serializedVersion: 2
-        x: 10
-        y: 0
-        width: 338
-        height: 1024
+        x: 0
+        y: 103
+        width: 380
+        height: 700
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -124,20 +124,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 599b8a9c1e4ef0c4fad310633d5d2b46
-      internalID: 868292160
+      spriteID: 28c6eb3afc678d847985f61743a79cb9
+      internalID: -569492294
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: jeongHyun_1
+      name: HaYoung_1
       rect:
         serializedVersion: 2
-        x: 348
-        y: 0
-        width: 338
-        height: 1024
+        x: 425
+        y: 103
+        width: 380
+        height: 700
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -145,20 +145,20 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: ba6218c687bf0294386857014139d5ef
-      internalID: -1542887844
+      spriteID: cf924276c458e744aa34146e5dd6aca0
+      internalID: 561342967
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: jeongHyun_2
+      name: HaYoung_2
       rect:
         serializedVersion: 2
-        x: 686
-        y: 0
-        width: 338
-        height: 1024
+        x: 850
+        y: 103
+        width: 380
+        height: 700
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -166,8 +166,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 64f5013cea308fa43a90b4091a061bb8
-      internalID: 1954367494
+      spriteID: 86420f2bc52d0b043852d0a8794d0f71
+      internalID: -418361140
       vertices: []
       indices: 
       edges: []
@@ -183,9 +183,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      jeongHyun_0: 868292160
-      jeongHyun_1: -1542887844
-      jeongHyun_2: 1954367494
+      HaYoung_0: -569492294
+      HaYoung_1: 561342967
+      HaYoung_2: -418361140
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

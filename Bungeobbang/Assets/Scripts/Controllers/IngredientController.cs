@@ -3,7 +3,7 @@ using UnityEngine;
 public class IngredientController : MonoBehaviour
 {
     public static IngredientController selectedThing;
-    [SerializeField] public Filling filling;
+    [SerializeField] public FillingType filling;
 
     Vector3 moveDir = new Vector3(0, 1, 0);
 
@@ -42,7 +42,6 @@ public class IngredientController : MonoBehaviour
 
         GetComponent<SpriteRenderer>().sortingOrder = maxSortingOrder;
         selectedThing = this;
-        Debug.Log($"{selectedThing.name}을 들었다");
 
     }
 

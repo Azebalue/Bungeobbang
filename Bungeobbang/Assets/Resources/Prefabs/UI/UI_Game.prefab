@@ -304,7 +304,7 @@ GameObject:
   - component: {fileID: 6437860716276249087}
   - component: {fileID: 7769838528568140469}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: timeText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -439,7 +439,7 @@ GameObject:
   - component: {fileID: 9039316427774326049}
   - component: {fileID: 3622279865526268968}
   m_Layer: 5
-  m_Name: upButton
+  m_Name: toggleViewButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -545,19 +545,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 9039316427774326049}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: CameraController, Assembly-CSharp
-        m_MethodName: toggleCamera
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &4804656071912042857
 GameObject:
   m_ObjectHideFlags: 0
@@ -570,7 +558,7 @@ GameObject:
   - component: {fileID: 1295010268029485397}
   - component: {fileID: 2073575843106199408}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: dayText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1038,8 +1026,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48cd4c98aa773704893e11908f586d4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day: {fileID: 2073575843106199408}
-  time: {fileID: 7769838528568140469}
 --- !u!1 &7024603486664342638
 GameObject:
   m_ObjectHideFlags: 0

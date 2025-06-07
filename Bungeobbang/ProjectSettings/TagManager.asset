@@ -6,14 +6,17 @@ TagManager:
   tags:
   - kettle
   - filling
+  - displayPlate
+  - bin
+  - customer
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - DropZone
   - Water
   - UI
-  - 
+  - FishBun
   - 
   - 
   - 
@@ -49,18 +52,30 @@ TagManager:
   - name: prebackground
     uniqueID: 3165113163
     locked: 0
-  - name: 3
-    uniqueID: 1907776543
+  - name: customer
+    uniqueID: 1527653885
     locked: 0
-  - name: 4
+  - name: desk
     uniqueID: 4272548855
+    locked: 0
+  - name: DialogueBallon
+    uniqueID: 3114717863
+    locked: 0
+  - name: Ingredient
+    uniqueID: 9303145
+    locked: 0
+  - name: mold
+    uniqueID: 4039193171
     locked: 0
   - name: Batter
     uniqueID: 280576007
     locked: 0
   - name: Filling
-    uniqueID: 2410063691
+    uniqueID: 1628218771
     locked: 0
-  - name: fishBun
+  - name: FishBun
     uniqueID: 1986304207
+    locked: 0
+  - name: UI
+    uniqueID: 3373809397
     locked: 0

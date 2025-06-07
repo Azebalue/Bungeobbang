@@ -11,13 +11,13 @@ public class ResourceManager
     }
 
     //프리팹 생성&반환 메서드
-    public GameObject Instantiate(string name)
+    public GameObject Instantiate(string path)
     {
-        GameObject prefab = Load<GameObject>($"Prefabs/{name}");
+        GameObject prefab = Load<GameObject>($"{path}");
 
         if (prefab == null)
         {
-            Debug.Log($"{name}이 null");
+            Debug.Log($"{path}이 null");
             prefab = Load<GameObject>($"nullPrefab");
         }
 
@@ -45,5 +45,11 @@ public class ResourceManager
             return sprites[(int)index];
         }
         
+    }
+
+    public CustomerData LoadCustomerSO(CustomerType customer)
+    {
+        return Resources.Load<CustomerData>($"Data/So/{customer}");
+
     }
 }

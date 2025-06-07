@@ -7,30 +7,15 @@ using UnityEngine.UI;
 public class UI_Intro : UI_Base
 {
 
-    enum Buttons
+    protected override void Init()
     {
-        Start,
-        Option,
-        Collection,
-        Quit,
-    }
+/*        BindChilds<Button>(typeof(Buttons), "Btns");
+        BindChild<Button, TextMeshProUGUI>(typeof(Buttons), "Text");*/
 
-    void Update()
-    {
-        
-    }
-
-    protected override void Bind()
-    {
-        BindChilds<Button>(typeof(Buttons), "Btns");
-        BindChild<Button, TextMeshProUGUI>(typeof(Buttons), "Text");
-    }
-
-    protected override void Get()
-    {
-        string[] BtnNames = Enum.GetNames(typeof(Buttons));
+        //string[] BtnNames = Enum.GetNames(typeof(Buttons));
 
     }
+
 
     #region MainMenu_ButtonMethods
 

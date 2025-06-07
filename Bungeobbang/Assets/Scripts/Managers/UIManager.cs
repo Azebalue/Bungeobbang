@@ -1,8 +1,73 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
-public class UIManager : MonoBehaviour
+public class UIManager 
 {
-    //타입별로 UI게임 오브젝트를 딕셔너리로 관리
-    //Dictionary<GameObject, GameObject[]> _dic = new Dictionary<GameObject, GameObject[]>();
+    GameObject scene;
+    Stack<GameObject> popup;
+    int popup_order = 10; //팝업 순서 조절 용
+
+    //UI오브젝트들의 부모가 되는 게임 오브젝트UIRoot
+    GameObject UIRoot
+    {
+        get
+        {
+            //탐색 해서 할당
+            GameObject root = GameObject.Find("@UI");
+
+            //없으면 생성하고 할당
+            if (root == null)
+                root = new GameObject { name = "@UI" };
+
+            //반환
+            return root;
+        }
+    }
+
+
+    //UI프리팹을 생성하는 메서드
+    public T ShowUI<T>(string name = null, bool isScene = true, Transform parent = null)
+        where T : UI_Base
+    {
+        //이름이 null이면 타입 이름 채택
+        if(string.IsNullOrEmpty(name))
+            name = typeof(T).Name;
+
+        //생성
+        GameObject prefab = Managers.Resource.Instantiate($"Prefabs/UI/{name}");
+        //하이어라키 위치 조정
+        if (parent == null)
+            prefab.transform.SetParent(UIRoot.transform);
+        else
+            prefab.transform.SetParent(parent);
+
+        //Scene or Popup 저장
+        if (isScene == true)
+        {
+            scene = prefab;
+        }
+        else
+        {
+            //필요하면 작성
+            ++popup_order;
+        }
+
+        return prefab.GetOrAddComponent<T>();
+    }
+
+    public void CloseUI(bool isScene = true)
+    {
+        if(isScene == true)
+        {
+            Object.Destroy(scene);
+        }
+        else
+        {
+            Object.Destroy(popup.Peek());
+            --popup_order;
+            popup.Pop();
+
+        }
+    }
 }

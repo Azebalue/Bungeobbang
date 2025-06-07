@@ -1,18 +1,22 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MoldController : MonoBehaviour
+    , IPointerClickHandler
 {
-    //public static MoldController instance { get; private set; }
 
     bool isFilled = false;
-
-    void OnMouseDown()
+    public bool IsFilled
     {
+        set { isFilled = value; }
+    }
 
-        if (IngredientController.selectedThing == null) 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (IngredientController.selectedThing == null)
             return;
 
-        if(isFilled == false)
+        if (isFilled == false)
         {
             InstanciateFishBun();
             isFilled = true;
@@ -23,8 +27,8 @@ public class MoldController : MonoBehaviour
     {
         if(IngredientController.selectedThing.CompareTag("kettle"))
         {
-            GameObject fishBun = Managers.Resource.Instantiate("fishBun");
-            fishBun.GetComponent<FishBun>().Init(transform.position);
+            GameObject fishBun = Managers.Resource.Instantiate("Prefabs/fishBun");
+            fishBun.GetComponent<FishBunController>().Set(transform.position, gameObject);
         }
 
 
