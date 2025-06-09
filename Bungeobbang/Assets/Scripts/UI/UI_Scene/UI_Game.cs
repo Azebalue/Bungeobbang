@@ -7,12 +7,18 @@ public class UI_Game : UI_Base
     #region 열거형
     enum TMP {
         dayText,
-        timeText
+        timeText,
+        moneyText,
     }
 
-    enum Btns
+    enum Btns {
+        settingsButton,
+        toggleViewButton,
+    }
+
+    enum GameObjects
     {
-        toggleViewButton
+
     }
     #endregion
 
@@ -31,7 +37,9 @@ public class UI_Game : UI_Base
 
         //데이터
         GetTMP((int)TMP.dayText).text = $"Day {Managers.Game.CurData.day}";
+        GetTMP((int)TMP.moneyText).text = $"{Managers.Game.CurData.money} 원";
         GetButton((int)Btns.toggleViewButton).gameObject.AddEvent(CameraController.toggleCameraAction);
+        GetButton((int)Btns.settingsButton).gameObject.AddEvent(settingsBtnFunc);
     
     
     }
@@ -44,4 +52,10 @@ public class UI_Game : UI_Base
 
     }
 
+
+    void settingsBtnFunc()
+    {
+        //Managers.Game.
+        //Managers.UI.ShowUI<>();
+    }
 }

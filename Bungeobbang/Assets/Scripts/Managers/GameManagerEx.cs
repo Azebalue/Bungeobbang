@@ -1,13 +1,15 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using static Util;
 
 public class GameData
 {
     public int day;
 
     public int money;
-    public int gold;
-    public int spritPiece;
+    //public int spritPiece;
 
     //도감
 
@@ -38,23 +40,49 @@ public class GameManagerEx
     public float delta;
     public int gameSpeed = 1;
 
-    bool shouldRunning; //가게 운영중인지
+    bool shouldStop; //가게 운영중인지
     public bool didInitDay; //하루 시작 처리 했는지
     bool hasDayEnd; //하루 종료 처리 했는지
-
-    GameObject gameObject;
     #endregion
 
-    //게임 생성 시
+    #region 게임 요소 관련 변수
+    GameObject parentGo;
+    public GameObject ParentGo
+    {
+        get
+        {
+            if (parentGo == null)
+                parentGo = GameObject.Find("@GameObject");
+
+            return parentGo;
+        }
+    }
+
+    const int numsOfCustomers = 3;
+    GameObject[] customerArr = new GameObject[numsOfCustomers];
+    GameObject[] fillingArr = new GameObject[GetEnumSize(typeof(FillingType))];
+    #endregion
+
+    //게임 생성 시 초기화 메서드
     public void InitGame()
     {
-        Debug.Log("게임 시작");
+        Debug.Log("게임 초기화");
+
+        //게임 시작 1회에만, 화면 상 게임 오브젝트 찾아서 변수랑 맵핑/바인딩
+        //1. 손님(customer) 오브젝트
+        for (int i = 0; i < numsOfCustomers; ++i)
+            customerArr[i] = FindObject(ParentGo, $"customer{i + 1}", true); 
+
+        //2. 필링(fillings) 오브젝트
+        for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
+            fillingArr[i] = FindObject(ParentGo, $"{(FillingType)i}", true); 
+
+        //3. 데이터 초기화
         CurData.day = 0;
-        shouldRunning = true;
-
         CurData.numOfFilling = 3;
+        CurData.money = 0;
 
-        //GameObjectController.Instance.Bind();
+        shouldStop = false;
 
     }
 
@@ -62,25 +90,23 @@ public class GameManagerEx
     public void runGame()
     {
         //1. 5시간 붕어빵 가게 운영
-
-        if(shouldRunning == true)
+        if(shouldStop == false)
         {
             //1-1. 하루 시작
             if (didInitDay == false)
             {
-                InitNextDay();
+                InitDaily();
                 didInitDay = true;
-                GameObjectController.Instance.enabled = true;
+
             }
 
-
             //1-2. 운영 중 시간 카운팅
-            delta += gameSpeed * Time.deltaTime;
+            delta += gameSpeed * Time.deltaTime * Managers._gameSpeed;
 
-            //운영 종료
+            //1-3. 운영 종료
             if (hour >= endHour)
             {
-                shouldRunning = false;
+                shouldStop = true;
                 didInitDay = false;
 
             }
@@ -93,7 +119,6 @@ public class GameManagerEx
             {
                 Managers.UI.CloseUI();
                 Managers.UI.ShowUI<UI_DayEnd>();
-                GameObjectController.Instance.enabled = false;
                 hasDayEnd = true;
 
             }
@@ -101,21 +126,40 @@ public class GameManagerEx
     }
 
     //내일 초기화 & 시작
-    public void InitNextDay()
+    public void InitDaily()
     {
-        //데이터 init
-        shouldRunning = true;
+        //1. 데이터 init
+        shouldStop = false;
         delta = 0;
         ++CurData.day;
 
         hasDayEnd = false;
         didInitDay = true;
 
-        //UI화면
+        //2. UI화면
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_Game>();
 
+        //3. 손님 비활성화
+        for (int i = 0; i < numsOfCustomers; ++i)
+        {
+            customerArr[i].GetComponent<CustomerController>().CoInstantiateCustomer();
+            //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
+            //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
+
+        }
+
+        //4. 필링 활성화/비활성화
+        for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
+        {
+            if (i < Managers.Game.CurData.numOfFilling)
+                fillingArr[i].SetActive(true);
+            else
+                fillingArr[i].SetActive(false);
+        }
+
 
     }
+
 
 }

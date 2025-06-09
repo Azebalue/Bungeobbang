@@ -17,6 +17,8 @@ public class UI_Order : UI_Base
         orderText = Util.Find<TextMeshProUGUI>(gameObject, "orderText");
         slider = Util.Find<Slider>(gameObject, "slider");
 
+        //slider.gameObject.AddEvent(SetOrder);
+
         // 3. 손님 분노 게이지 초기화
         slider.value = 0f; 
 
@@ -34,11 +36,7 @@ public class UI_Order : UI_Base
 
     }
 
-    public void SetOrderText(int value )
-    {
-        slider.value = value;
 
-    }
 
 
 }

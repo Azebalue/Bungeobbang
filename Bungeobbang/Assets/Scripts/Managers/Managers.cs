@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -17,21 +18,12 @@ public class Managers : MonoBehaviour
 
 
     #region 조작
-    [SerializeField] int gameSpeed = 2;
-    public int GameSpeed
-    {
-        get => gameSpeed;
-        set
-        {
-            gameSpeed = value;
-            Game.gameSpeed = gameSpeed;
-        }
-    }
-
-    [SerializeField] int reactionDelayTime = 1;
+     public static int _gameSpeed = 2; //게임 속도
+    public int reactionDelayTime = 1; //반응하는 속도
 
 
     #endregion
+
 
     void Start()
     {
@@ -50,8 +42,9 @@ public class Managers : MonoBehaviour
             GameObject go = GameObject.Find("@Managers");
             _instance = go.GetOrAddComponent<Managers>();
 
-            //GetOrAddComponent가... 있던거였냐고
+            //GetOrAddComponent가... ?
         }
 
     }
+
 }

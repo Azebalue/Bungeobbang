@@ -9,6 +9,8 @@ public class CustomerController : MonoBehaviour
     static int level = 1; //손님 레벨
     static int Ex; //누적 손님 만족도
 
+    #region 게임 오브젝트 관련 변수
+    bool didAppeared = false;
     UI_Order ui_order;
     UI_Order UI_order
     {
@@ -20,10 +22,36 @@ public class CustomerController : MonoBehaviour
         }
     }
 
+    GameObject customer;
+    public GameObject Customer
+    {
+        get
+        {
+            if(customer == null)
+                customer = Util.FindObject(gameObject, "Sprite", true);
+
+            return customer;
+
+        }
+    }
+    #endregion
+
     #region 주문 관련 변수
     Dictionary<FillingType, int> order = new Dictionary<FillingType, int>(); //붕어빵 종류, 개수
+    static Dictionary<FillingType, int> allOrder 
+        = new Dictionary<FillingType, int>(); //주문 전체
     int numsOfFishBun; //주문하는 붕빵 개수
-    int numsOfOrderType; //주문하는 맛 종류 개수
+    public int NumOfFishBun
+    {
+        get
+        {
+            return numsOfFishBun;
+        }
+        set
+        {
+            numsOfFishBun = value;
+        }
+    }
 
     //붕어빵 주문 개수 범위
     int minFishBun = 1;
@@ -64,23 +92,11 @@ public class CustomerController : MonoBehaviour
     int reactionTime = 1;
     #endregion
 
-    public event Action customerInitAction;
-
-    void Awake()
-    {
-        //UI_order 프리팹 위치 고정
-        // UI_order.gameObject.transform.SetParent(gameObject.transform);
-        
-        customerInitAction -= InitCustomer;
-        customerInitAction += InitCustomer;
-
-        customerInitAction -= Order;
-        customerInitAction += Order;
-
-    }
-
     void Update()
     {
+        if (didAppeared == false)
+            return;
+
         UI_order.slider.value = AngryPoint * 0.01f;
 
         //분노 게이지가 100이 되면 화남
@@ -92,6 +108,7 @@ public class CustomerController : MonoBehaviour
     {
 
         UI_order.gameObject.SetActive(false);
+        Customer.gameObject.SetActive(false);
 
         //1. 만족도 관련 변수 측정 시작
         startTime = Managers.Game.delta;
@@ -102,10 +119,10 @@ public class CustomerController : MonoBehaviour
         CustomerData = Managers.Resource.LoadCustomerSO((CustomerType)customerType);
 
         //2. 손님 스프라이트
-        GetComponent<SpriteRenderer>().sprite = CustomerData.GetImage();
+        customer.GetComponent<SpriteRenderer>().sprite = CustomerData.GetImage();
         //콜라이더 reset
-        Destroy(gameObject.GetComponent<PolygonCollider2D>());
-        gameObject.AddComponent<PolygonCollider2D>();
+        Destroy(customer.gameObject.GetComponent<PolygonCollider2D>());
+        customer.gameObject.AddComponent<PolygonCollider2D>();
 
     }
 
@@ -120,30 +137,27 @@ public class CustomerController : MonoBehaviour
             orderableFillingType.Add(i);
 
         //1. 주문할 붕어빵 개수
-        //Debug.Log($"최저 {minFishBun}, 최고 {maxFishBun+1}");
-        numsOfFishBun = UnityEngine.Random.Range(minFishBun, maxFishBun+1);
-        //Debug.Log($"주문할 붕어빵 {numsOfFishBun}개");
+        NumOfFishBun = UnityEngine.Random.Range(minFishBun, maxFishBun+1);
+
+       //Debug.Log($"[Order]{gameObject.name}의 주문 : 총 {NumOfFishBun}개");
 
         //붕어빵 랜덤 종류*개수 
-        while(numsOfFishBun != 0)
+        for (int fishbun = NumOfFishBun; fishbun > 0;  )
         {
             //종류 랜덤
             int randomIndex = UnityEngine.Random.Range(0, orderableFillingType.Count);
             FillingType fillingType = (FillingType)orderableFillingType[randomIndex];
             orderableFillingType.RemoveAt(randomIndex); //고른 맛 빼기
 
-
             //개수 랜덤
             int _numsOfFishBun ; // fillingType맛으로 시킬 붕빵 개수
             //남은 붕어빵 개수 1개 이상일 때에만 랜덤
-            if (numsOfFishBun > 1) 
-                _numsOfFishBun = UnityEngine.Random.Range(1, numsOfFishBun - 1);
+            if (fishbun > 1) 
+                _numsOfFishBun = UnityEngine.Random.Range(1, fishbun - 1);
             else 
                 _numsOfFishBun = 1;
 
-            Debug.Log($"{fillingType}맛 {_numsOfFishBun}개");
-
-            numsOfFishBun -= _numsOfFishBun;
+            fishbun -= _numsOfFishBun;
             order.Add(fillingType, _numsOfFishBun);
 
         }
@@ -156,9 +170,9 @@ public class CustomerController : MonoBehaviour
 
     public void Eat(FillingType filling, QualityStatus baking)
     {
-        int perfectPoint = 20;
-        int normalPoint = 10;
-        int disappointPoint = 5;
+        int perfectPoint = (int) (100 / NumOfFishBun);
+        int normalPoint = (int)(perfectPoint * 0.8);
+        int disappointPoint = 20;
 
         //1. 종류가 맞는 지 체크
         if (order.ContainsKey(filling) == true)
@@ -204,29 +218,9 @@ public class CustomerController : MonoBehaviour
 
     }
 
-/*    void Exit()
-    {
-        int angryPoint = AngryPoint;
-
-        //if ( angryPoint )
-        
-        // 대화 팝업 없애기
-        UI_order.gameObject.SetActive(false);
-
-        //1초 웃고 사라짐
-        GetComponent<SpriteRenderer>().sprite = CustomerData.GetImage(1); //만족
-        gameObject.SetActive(false);
-        //StartCoroutine( () => { }, 2);
-        //
-    }*/
 
     IEnumerator Exit()
     {
-        int angryPoint = AngryPoint;
-
-        // 대화 팝업 없애기
-        UI_order.gameObject.SetActive(false);
-
         //반응 효과
         Sprite reaction;
         if(AngryPoint >= 100)
@@ -234,15 +228,50 @@ public class CustomerController : MonoBehaviour
         else
             reaction = CustomerData.GetImage(1); //만족
 
+        // 대화 팝업 없애기
+        UI_order.gameObject.SetActive(false);
 
-        GetComponent<SpriteRenderer>().sprite = reaction;
+        customer.GetComponent<SpriteRenderer>().sprite = reaction;
 
 
         yield return new WaitForSeconds(reactionTime);
-        gameObject.SetActive(false);
 
+        customer.gameObject.SetActive(false);
+        order.Clear();
+        didAppeared = false;
+
+        //CoInstantiateCustomer();
         yield break;
 
+    }
+
+
+    public void CoInstantiateCustomer()
+    {
+        StartCoroutine(InstatiateCustomer());
+    }
+    IEnumerator InstatiateCustomer()
+    {
+        InitCustomer();
+
+        //스폰 대기 시간 관련 변수
+        float spawnDalayMin = 2f;
+        float spawnDalayMax = 8f;
+
+        float spawnDelayTime = UnityEngine.Random.Range(spawnDalayMin, spawnDalayMax);
+        spawnDelayTime /= Managers.Game.gameSpeed; //시간 속도
+        Debug.Log($"{spawnDelayTime}초 후 생성");
+
+        yield return new WaitForSeconds(spawnDelayTime);
+
+        customer.gameObject.SetActive(true);
+        Order();
+        Debug.Log($"{NumOfFishBun}개 주문");
+
+        didAppeared = true;
+        Debug.Log($"생성");
+
+        yield break;
     }
 
 }

@@ -126,10 +126,11 @@ public class FishBunController : MonoBehaviour,
 
     }
 
-    void ServeFishBun(GameObject customer)
+    void ServeFishBun(GameObject sprite)
     {
-        Debug.Log("붕빵 제공");
-        customer.GetComponent<CustomerController>().Eat(fillingType, bakingStatus);
+        //부모 오브젝트에서 스크립트 추출
+        CustomerController controller = sprite.GetComponentInParent<CustomerController>();
+        controller.Eat(fillingType, bakingStatus);
 
     }
     #region 요리 함수
