@@ -15,14 +15,20 @@ public class IngredientController : MonoBehaviour
     int originSortingOrder;
     int maxSortingOrder = 10;
 
-    private void Start()
+    void Awake()
+    {
+        Managers.Game.InitObjAction -= InitIngredient;
+        Managers.Game.InitObjAction += InitIngredient;
+    }
+
+    void Start()
     {
         originSortingOrder = GetComponent<SpriteRenderer>().sortingOrder;
         originZRotation = transform.rotation.eulerAngles.z;
         originScale = transform.localScale;
     }
 
-    private void OnMouseDown()
+    void OnMouseDown()
     {
         //선택된 이전 물건이 있었으면
         if (selectedThing != null)
@@ -54,5 +60,12 @@ public class IngredientController : MonoBehaviour
         transform.localScale = originScale;
         selectedThing.GetComponent<SpriteRenderer>().sortingOrder = selectedThing.originSortingOrder;
         selectedThing = null;
+    }
+
+    void InitIngredient()
+    {
+        if(selectedThing != null)
+            selectedThing.pickDown();
+
     }
 }

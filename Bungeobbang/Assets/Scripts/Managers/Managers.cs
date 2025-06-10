@@ -1,6 +1,7 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Managers : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class Managers : MonoBehaviour
 
     void Update()
     {
-        Game.runGame();
+        Game.OnUpdate();
     }
 
     static void Init()

@@ -10,8 +10,8 @@ public class FishBunController : MonoBehaviour,
     GameObject parentMold; //하이어라키 상 부모 오브젝트
     GameObject filling; //붕어삥 오브젝트 산하의 붕어빵 소 게임오브젝트
 
-    FillingType fillingType; //붕어빵 맛
-    Vector3 spawnPos; //초기 위치
+    public FillingType fillingType; //붕어빵 맛
+    public Vector3 spawnPos; //초기 위치
 
     public CookingState state = CookingState.bottomBatter; //초기 상태
     QualityStatus bakingStatus;
@@ -64,8 +64,9 @@ public class FishBunController : MonoBehaviour,
             if (hit.collider.CompareTag("displayPlate"))
             {
 
-                spawnPos = DisplateController.SetPos(fillingType);
-                transform.position =spawnPos;
+                //spawnPos = DisplateController.SetPos(fillingType);
+                DisplateController.Set(gameObject);
+                transform.position = spawnPos;
 
             }
             else

@@ -107,6 +107,11 @@ public class CustomerController : MonoBehaviour
 
     bool didInstat = false;
 
+    void Awake()
+    {
+        Managers.Game.InitObjAction -= CoInstantiateCustomer;
+        Managers.Game.InitObjAction +=  CoInstantiateCustomer;
+    }
     void Update()
     {
         //플레이어 존재
@@ -119,7 +124,6 @@ public class CustomerController : MonoBehaviour
             if(didInstat == false)
             {
                 StartCoroutine(Exit()); //퇴장
-                CoInstantiateCustomer(); //다음 손님
                 didInstat = true;
             }
         }
@@ -129,6 +133,7 @@ public class CustomerController : MonoBehaviour
 
     public void InitCustomer()
     {
+        Debug.Log("손님 초기화");
 
         UI_order.gameObject.SetActive(false);
         Customer.gameObject.SetActive(false);
@@ -210,9 +215,9 @@ public class CustomerController : MonoBehaviour
             //맛 체크
             if (baking == QualityStatus.perfect)
             {
-                Debug.Log($"{AngryPoint} - {perfectPoint}");
+                //Debug.Log($"{AngryPoint} - {perfectPoint}");
                 orderAngryPoint -= perfectPoint;
-                Debug.Log($"{AngryPoint}로 내려감");
+                //Debug.Log($"{AngryPoint}로 내려감");
 
             }
             else
@@ -222,7 +227,7 @@ public class CustomerController : MonoBehaviour
 
             //지불할 돈 적립
             pay += Define.FillingPrice[(int)filling];
-            Debug.Log($"지금까지 {pay}원 어치 먹음 ");
+            //Debug.Log($"지금까지 {pay}원 어치 먹음 ");
 
             //order 딕셔너리 정리
             if (--order[filling] == 0)
@@ -242,10 +247,8 @@ public class CustomerController : MonoBehaviour
         }
         else
         {
-            //기획 고민중..
-
-            //다른 맛을 주면 불만 up
-            orderAngryPoint += disappointPoint;
+            //다른 맛을 주면 불만 미세하게 down
+            orderAngryPoint -= disappointPoint;
 
             //환불해줘야 하나
 
@@ -259,7 +262,7 @@ public class CustomerController : MonoBehaviour
 
     IEnumerator Exit()
     {
-        Debug.Log($" {gameObject.name} Exit 시작");
+        //Debug.Log($" {gameObject.name} Exit 시작");
 
         //반응 효과
         Sprite reaction;
@@ -281,7 +284,7 @@ public class CustomerController : MonoBehaviour
         //손님 비활성화
         customer.gameObject.SetActive(false);
 
-        Debug.Log($" {gameObject.name} Exit 끝");
+        //Debug.Log($" {gameObject.name} Exit 끝");
         
         //다음 손님
         StartCoroutine(InstatiateCustomer());
@@ -297,7 +300,7 @@ public class CustomerController : MonoBehaviour
 
     IEnumerator InstatiateCustomer()
     {
-        Debug.Log($"{gameObject.name} InstatiateCustomer 시작");
+        //Debug.Log($"{gameObject.name} InstatiateCustomer 시작");
 
         InitCustomer();
 
@@ -306,14 +309,15 @@ public class CustomerController : MonoBehaviour
         float spawnDalayMax = 8f;
 
         float spawnDelayTime = UnityEngine.Random.Range(spawnDalayMin, spawnDalayMax);
-        spawnDelayTime /= Managers.Game.gameSpeed; //시간 속도
-        Debug.Log($"[{gameObject.name}] {spawnDelayTime}초 후 생성");
+        Debug.Log($"[{gameObject.name}] 1. {spawnDelayTime}초 후 생성");
+        spawnDelayTime /= Managers.Game.GameSpeed; //시간 속도
+        Debug.Log($"[{gameObject.name}] 2. {spawnDelayTime}초 후 생성");
 
         yield return new WaitForSeconds(spawnDelayTime);
         customer.gameObject.SetActive(true);
         Order();
 
-        Debug.Log($"{gameObject.name} InstatiateCustomer 끝");
+        //Debug.Log($"{gameObject.name} InstatiateCustomer 끝");
 
         yield break;
     }
