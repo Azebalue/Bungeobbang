@@ -24,7 +24,7 @@ public class UI_DayEnd : UI_Base
         $"{Managers.Game.totalFishBunsSold} 개",
         $"{Managers.Game.totalCustomers} 명",
         $"{Managers.Game.todayRevenue} 원",
-        $"{-Managers.Game.ingredientCost} 원",
+        $"{-Managers.Game.IngredientCost} 원",
         $"{Managers.Game.netProfit} 원"
     };
 

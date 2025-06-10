@@ -52,6 +52,7 @@ public class Define
     public static string FillingString = "Filling";
 
     public static int BatterCost = 100;
+    public static float FillingCostRate = 0.2f;
 
     public static int[] FillingPrice=
     {

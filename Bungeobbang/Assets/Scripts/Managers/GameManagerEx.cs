@@ -73,16 +73,22 @@ public class GameManagerEx
     public int totalFishBunsSold;      // 판매한 붕어빵 수
     public int totalCustomers;         // 방문한 손님 수
 
-    // 오늘 매출
-    public int todayRevenue
-    {
-        get { return CurData.money - yesterdayProfit;  }
-    }
-    public int ingredientCost;         // 재료 비용
     public int yesterdayProfit;      // 어제 수익
+    private int ingredientCost;         // 재료 비용
+    public int IngredientCost
+    {
+        get { return ingredientCost; }
+        set { ingredientCost = value; }
+    }
+
+    // 오늘 매출
+    public int todayRevenue;
+
     public int netProfit //오늘 순수익
     {
-        get { return todayRevenue - ingredientCost; }
+        get {
+            Debug.Log($"netProfit: {todayRevenue} - {ingredientCost} = {todayRevenue - ingredientCost}");
+            return  (todayRevenue - ingredientCost); }
     }
 
 
@@ -181,12 +187,17 @@ public class GameManagerEx
 
     void FinalizeDaily()
     {
-        Debug.Log("2. 하루 끝");
+        Debug.Log("2. 하루 끝 ");
+
+        isRunning = false;
+
+        //정산
+        todayRevenue = CurData.money - yesterdayProfit;
+        CurData.money -= ingredientCost;
 
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_DayEnd>();
 
-        isRunning = false;
     }
 
     public void StartNextDay()

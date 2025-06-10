@@ -68,6 +68,8 @@ public class FishBunController : MonoBehaviour,
                 DisplateController.Set(gameObject);
                 transform.position = spawnPos;
 
+                //몰드 비우기
+                parentMold.GetComponent<MoldController>().IsFilled = false;
             }
             else
             {
@@ -78,8 +80,7 @@ public class FishBunController : MonoBehaviour,
 
             }
 
-            //몰드 비우기
-            parentMold.GetComponent<MoldController>().IsFilled = false;
+
         }
         else
         {
@@ -177,8 +178,8 @@ public class FishBunController : MonoBehaviour,
         ++state;
 
         //재료 비용 통계
-        Managers.Game.ingredientCost -= (int) (Define.FillingPrice[(int)fillingType] * 0.4f);
-        Debug.Log($"{(int) (Define.FillingPrice[(int)fillingType] * 0.3f)}원의 소");
+        Managers.Game.IngredientCost += (int) (Define.FillingPrice[(int)fillingType] * Define.FillingCostRate);
+        Debug.Log($"{(int) (Define.FillingPrice[(int)fillingType] * Define.FillingCostRate)}원의 소");
     }
 
     void addBatter()
