@@ -40,10 +40,15 @@ public class GameManagerEx
     public float delta;
     public int gameSpeed = 1;
 
-    public bool shouldStop; //가게 운영중인지
-    public bool didDayEnd; //가게 운영중인지
-    public bool didInitDay; //하루 시작 처리 했는지
-    bool hasDayEnd; //하루 종료 처리 했는지
+    /*    public bool shouldStop; //가게 운영중인지
+        public bool didDayEnd; //가게 운영중인지
+        public bool didInitDay; //하루 시작 처리 했는지
+        bool hasDayEnd; //하루 종료 처리 했는지*/
+
+    bool hasInitialized = false; //가게 운영 시작처리했는지
+    bool hasFinalized= false; //가게 운영 끝처리했는지
+
+    bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
     #endregion
 
     #region 게임 요소 관련 변수
@@ -83,65 +88,51 @@ public class GameManagerEx
         CurData.numOfFilling = 3;
         CurData.money = 0;
 
-        shouldStop = false;
-        didDayEnd = false;
+        isRunning = true;
+        hasInitialized = false;
+        hasFinalized = false;
+
     }
 
     //하루 운영 메서드
     public void runGame()
     {
-        if (didDayEnd == true)
+        if (isRunning == false)
             return;
 
-        Debug.Log("게임 플레이");
-
-        //1. 5시간 붕어빵 가게 운영
-        if (shouldStop == false)
+        //하루 시작 처리 (1회성)
+        if (hasInitialized == false)
         {
-            //1-1. 하루 시작
-            if (didInitDay == false)
-            {
-                InitDaily();
-                didInitDay = true;
-
-            }
-
-            //1-2. 운영 중 시간 카운팅
-            delta += gameSpeed * Time.deltaTime * Managers.Instance._gameSpeed;
-
-            //1-3. 운영 종료
-            if (hour >= endHour)
-            {
-                shouldStop = true;
-                didInitDay = false;
-
-            }
+            InitDaily();
+            hasInitialized = true;
         }
-        //2. 운영 결과 UI & 상점 UI
+        //하루 끝 처리 (1회성)
+        else if (hour >= endHour)
+        {
+
+            if (hasFinalized == false)
+            {
+                FinalizeDaily();
+                hasFinalized = true;
+            }
+
+        }
+
         else
         {
-            //하루 종료 처리했는지
-            if (hasDayEnd == false)
-            {
-                Managers.UI.CloseUI();
-                Managers.UI.ShowUI<UI_DayEnd>();
-                hasDayEnd = true;
-                didDayEnd = true;
-
-            }
+            //운영: 시간 계산
+            delta += gameSpeed * Time.deltaTime * Managers.Instance._gameSpeed;
         }
     }
 
-    //내일 초기화 & 시작
-    public void InitDaily()
+    void InitDaily()
     {
-        //1. 데이터 init
-        shouldStop = false;
+        Debug.Log("1. 하루 시작");
+        //1. 데이터 초기화
+        hasFinalized = false;
+
         delta = 0;
         ++CurData.day;
-
-        hasDayEnd = false;
-        didInitDay = true;
 
         //2. UI화면
         Managers.UI.CloseUI();
@@ -163,9 +154,105 @@ public class GameManagerEx
             else
                 fillingArr[i].SetActive(false);
         }
-
-
     }
+
+    void FinalizeDaily()
+    {
+        Debug.Log("2. 하루 끝");
+
+        Managers.UI.CloseUI();
+        Managers.UI.ShowUI<UI_DayEnd>();
+
+        isRunning = false;
+    }
+
+    public void StartNextDay()
+    {
+        Debug.Log("3. 다음 날로 넘어가기");
+
+        isRunning = true;
+        hasInitialized = false;
+    }
+    //void 
+    /*
+        {
+
+            if (didDayEnd == true)
+                return;
+
+            Debug.Log("게임 플레이");
+
+            //1. 5시간 붕어빵 가게 운영
+            if (shouldStop == false)
+            {
+                //1-1. 하루 시작
+                if (didInitDay == false)
+                {
+                    InitDaily();
+                    didInitDay = true;
+
+                }
+
+                //1-2. 운영 중 시간 카운팅
+                delta += gameSpeed * Time.deltaTime * Managers.Instance._gameSpeed;
+
+                //1-3. 운영 종료
+                if (hour >= endHour)
+                {
+                    shouldStop = true;
+                    didInitDay = false;
+
+                }
+            }
+            //2. 운영 결과 UI & 상점 UI
+            else
+            {
+                //하루 종료 처리했는지
+                if (hasDayEnd == false)
+                {
+                    Managers.UI.CloseUI();
+                    Managers.UI.ShowUI<UI_DayEnd>();
+                    hasDayEnd = true;
+                    didDayEnd = true;
+
+                }
+            }
+        }
+
+        //내일 초기화 & 시작
+        public void InitDaily()
+        {
+            //1. 데이터 init
+            shouldStop = false;
+            delta = 0;
+            ++CurData.day;
+
+            hasDayEnd = false;
+            didInitDay = true;
+
+            //2. UI화면
+            Managers.UI.CloseUI();
+            Managers.UI.ShowUI<UI_Game>();
+
+            //3. 손님 비활성화
+            for (int i = 0; i < numsOfCustomers; ++i)
+            {
+                customerArr[i].GetComponent<CustomerController>().CoInstantiateCustomer();
+                //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
+
+            }
+
+            //4. 필링 활성화/비활성화
+            for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
+            {
+                if (i < Managers.Game.CurData.numOfFilling)
+                    fillingArr[i].SetActive(true);
+                else
+                    fillingArr[i].SetActive(false);
+            }
+
+
+        }*/
 
 
 }
