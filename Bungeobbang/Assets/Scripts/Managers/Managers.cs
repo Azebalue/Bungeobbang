@@ -18,7 +18,7 @@ public class Managers : MonoBehaviour
 
 
     #region 조작
-     public static int _gameSpeed = 2; //게임 속도
+    public int _gameSpeed = 2; //게임 속도
     public int reactionDelayTime = 1; //반응하는 속도
 
 

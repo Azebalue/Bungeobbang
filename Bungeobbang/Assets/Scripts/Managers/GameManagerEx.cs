@@ -40,7 +40,8 @@ public class GameManagerEx
     public float delta;
     public int gameSpeed = 1;
 
-    bool shouldStop; //가게 운영중인지
+    public bool shouldStop; //가게 운영중인지
+    public bool didDayEnd; //가게 운영중인지
     public bool didInitDay; //하루 시작 처리 했는지
     bool hasDayEnd; //하루 종료 처리 했는지
     #endregion
@@ -83,14 +84,19 @@ public class GameManagerEx
         CurData.money = 0;
 
         shouldStop = false;
-
+        didDayEnd = false;
     }
 
     //하루 운영 메서드
     public void runGame()
     {
+        if (didDayEnd == true)
+            return;
+
+        Debug.Log("게임 플레이");
+
         //1. 5시간 붕어빵 가게 운영
-        if(shouldStop == false)
+        if (shouldStop == false)
         {
             //1-1. 하루 시작
             if (didInitDay == false)
@@ -101,7 +107,7 @@ public class GameManagerEx
             }
 
             //1-2. 운영 중 시간 카운팅
-            delta += gameSpeed * Time.deltaTime * Managers._gameSpeed;
+            delta += gameSpeed * Time.deltaTime * Managers.Instance._gameSpeed;
 
             //1-3. 운영 종료
             if (hour >= endHour)
@@ -120,6 +126,7 @@ public class GameManagerEx
                 Managers.UI.CloseUI();
                 Managers.UI.ShowUI<UI_DayEnd>();
                 hasDayEnd = true;
+                didDayEnd = true;
 
             }
         }
@@ -144,7 +151,6 @@ public class GameManagerEx
         for (int i = 0; i < numsOfCustomers; ++i)
         {
             customerArr[i].GetComponent<CustomerController>().CoInstantiateCustomer();
-            //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
             //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
 
         }

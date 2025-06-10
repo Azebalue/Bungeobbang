@@ -48,6 +48,7 @@ public class UI_Game : UI_Base
     {
         //분은 10의 단위로만 바꿈
         GetTMP((int)TMP.timeText).text = ($"{Managers.Game.hour} : {minute}0");
+        GetTMP((int)TMP.moneyText).text = ($"{Managers.Game.CurData.money} 원 ");
 
 
     }

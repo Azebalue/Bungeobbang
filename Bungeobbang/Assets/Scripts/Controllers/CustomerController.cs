@@ -10,12 +10,12 @@ public class CustomerController : MonoBehaviour
     static int Ex; //누적 손님 만족도
 
     #region 게임 오브젝트 관련 변수
-    bool didAppeared = false;
     UI_Order ui_order;
     UI_Order UI_order
     {
-        get { 
-            if(ui_order == null)
+        get
+        {
+            if (ui_order == null)
                 ui_order = Util.FindObject(gameObject, "UI_Order", true).GetComponent<UI_Order>();
 
             return ui_order;
@@ -27,7 +27,7 @@ public class CustomerController : MonoBehaviour
     {
         get
         {
-            if(customer == null)
+            if (customer == null)
                 customer = Util.FindObject(gameObject, "Sprite", true);
 
             return customer;
@@ -38,7 +38,7 @@ public class CustomerController : MonoBehaviour
 
     #region 주문 관련 변수
     Dictionary<FillingType, int> order = new Dictionary<FillingType, int>(); //붕어빵 종류, 개수
-    static Dictionary<FillingType, int> allOrder 
+    static Dictionary<FillingType, int> allOrder
         = new Dictionary<FillingType, int>(); //주문 전체
     int numsOfFishBun; //주문하는 붕빵 개수
     public int NumOfFishBun
@@ -58,33 +58,46 @@ public class CustomerController : MonoBehaviour
     int maxFishBun = 3;
 
     //붕어빵 종류 개수 범위
-    const int minOrderType = 1; 
+    const int minOrderType = 1;
     const int maxOrderType = 3;
 
     int orderAngryPoint; //주문 관련 불만도
+    int angryPoint; //종합 불만도
     public int AngryPoint //종합 불만도 (주문 + 대기 시간)
     {
         get
         {
-            int angryPoint = orderAngryPoint + (int)WaitingTime;
+            angryPoint = orderAngryPoint + (int)WaitingTime;
 
             if (angryPoint >= 100)
+            {
+
                 return 100;
+            }
             else
                 return angryPoint;
 
         }
+        set
+        {
+            AngryPoint = Mathf.Clamp(value, 0, 100);
+            //Debug.Log($"angryPoint: {value} => {angryPoint} VS {AngryPoint}");
+
+        }
     }
+
+    int pay = 0;
     #endregion
 
     #region 시간 관련 변수
     float startTime;
     float endTime;
-    float WaitingTime 
+    float WaitingTime
     {
-        get {
+        get
+        {
             endTime = Managers.Game.delta;
-            return endTime - startTime;  
+            return endTime - startTime;
         }
         set { startTime = value; }
     }
@@ -92,16 +105,26 @@ public class CustomerController : MonoBehaviour
     int reactionTime = 1;
     #endregion
 
+    bool didInstat = false;
+
     void Update()
     {
-        if (didAppeared == false)
-            return;
+        //플레이어 존재
+        if (AngryPoint < 100)
+        {
+            UI_order.slider.value = AngryPoint;
+        }
+        else
+        {
+            if(didInstat == false)
+            {
+                StartCoroutine(Exit()); //퇴장
+                CoInstantiateCustomer(); //다음 손님
+                didInstat = true;
+            }
+        }
 
-        UI_order.slider.value = AngryPoint * 0.01f;
 
-        //분노 게이지가 100이 되면 화남
-        if (AngryPoint == 100)
-            StartCoroutine(Exit());
     }
 
     public void InitCustomer()
@@ -124,10 +147,16 @@ public class CustomerController : MonoBehaviour
         Destroy(customer.gameObject.GetComponent<PolygonCollider2D>());
         customer.gameObject.AddComponent<PolygonCollider2D>();
 
+        pay = 0;
+
     }
 
     public void Order()
     {
+
+        //주문 내역 비우기
+        order.Clear();
+        //Debug.Log($"{gameObject.name}주문 비우기\n {order.Count}개");
 
         //맛 중복 방지를 위한 범위 리스트
         List<int> orderableFillingType = new List<int>();
@@ -137,12 +166,12 @@ public class CustomerController : MonoBehaviour
             orderableFillingType.Add(i);
 
         //1. 주문할 붕어빵 개수
-        NumOfFishBun = UnityEngine.Random.Range(minFishBun, maxFishBun+1);
+        NumOfFishBun = UnityEngine.Random.Range(minFishBun, maxFishBun + 1);
 
-       //Debug.Log($"[Order]{gameObject.name}의 주문 : 총 {NumOfFishBun}개");
+        //Debug.Log($"[Order]{gameObject.name}의 주문 : 총 {NumOfFishBun}개");
 
         //붕어빵 랜덤 종류*개수 
-        for (int fishbun = NumOfFishBun; fishbun > 0;  )
+        for (int fishbun = NumOfFishBun; fishbun > 0;)
         {
             //종류 랜덤
             int randomIndex = UnityEngine.Random.Range(0, orderableFillingType.Count);
@@ -150,11 +179,11 @@ public class CustomerController : MonoBehaviour
             orderableFillingType.RemoveAt(randomIndex); //고른 맛 빼기
 
             //개수 랜덤
-            int _numsOfFishBun ; // fillingType맛으로 시킬 붕빵 개수
+            int _numsOfFishBun; // fillingType맛으로 시킬 붕빵 개수
             //남은 붕어빵 개수 1개 이상일 때에만 랜덤
-            if (fishbun > 1) 
+            if (fishbun > 1)
                 _numsOfFishBun = UnityEngine.Random.Range(1, fishbun - 1);
-            else 
+            else
                 _numsOfFishBun = 1;
 
             fishbun -= _numsOfFishBun;
@@ -162,42 +191,52 @@ public class CustomerController : MonoBehaviour
 
         }
 
-        UI_order.SetOrderText(order); 
-        UI_order.gameObject.SetActive(true); 
+        UI_order.SetOrderText(order);
+        UI_order.gameObject.SetActive(true);
 
 
     }
 
     public void Eat(FillingType filling, QualityStatus baking)
     {
-        int perfectPoint = (int) (100 / NumOfFishBun);
+        int perfectPoint = (100 / NumOfFishBun);
         int normalPoint = (int)(perfectPoint * 0.8);
         int disappointPoint = 20;
 
         //1. 종류가 맞는 지 체크
         if (order.ContainsKey(filling) == true)
         {
+
             //맛 체크
-            if(baking == QualityStatus.perfect)
+            if (baking == QualityStatus.perfect)
+            {
+                Debug.Log($"{AngryPoint} - {perfectPoint}");
                 orderAngryPoint -= perfectPoint;
+                Debug.Log($"{AngryPoint}로 내려감");
+
+            }
             else
                 orderAngryPoint -= normalPoint;
 
-            //order 딕셔너리 정리
-            if(--order[filling] == 0)
-            {
-                Debug.Log("한 종류 다 먹음");
 
+
+            //지불할 돈 적립
+            pay += Define.FillingPrice[(int)filling];
+            Debug.Log($"지금까지 {pay}원 어치 먹음 ");
+
+            //order 딕셔너리 정리
+            if (--order[filling] == 0)
+            {
                 order.Remove(filling); //딕셔너리 제거
 
-                if(order.Count == 0)
+                if (order.Count == 0)
                 {
                     orderAngryPoint -= normalPoint;
                     StartCoroutine(Exit());
                 }
             }
 
-            
+
 
 
         }
@@ -218,12 +257,13 @@ public class CustomerController : MonoBehaviour
 
     }
 
-
     IEnumerator Exit()
     {
+        Debug.Log($" {gameObject.name} Exit 시작");
+
         //반응 효과
         Sprite reaction;
-        if(AngryPoint >= 100)
+        if (AngryPoint >= 100)
             reaction = CustomerData.GetImage(2); //불만족
         else
             reaction = CustomerData.GetImage(1); //만족
@@ -233,14 +273,18 @@ public class CustomerController : MonoBehaviour
 
         customer.GetComponent<SpriteRenderer>().sprite = reaction;
 
-
         yield return new WaitForSeconds(reactionTime);
 
-        customer.gameObject.SetActive(false);
-        order.Clear();
-        didAppeared = false;
+        //돈 내기
+        Managers.Game.CurData.money += pay;
 
-        //CoInstantiateCustomer();
+        //손님 비활성화
+        customer.gameObject.SetActive(false);
+
+        Debug.Log($" {gameObject.name} Exit 끝");
+        
+        //다음 손님
+        StartCoroutine(InstatiateCustomer());
         yield break;
 
     }
@@ -250,8 +294,11 @@ public class CustomerController : MonoBehaviour
     {
         StartCoroutine(InstatiateCustomer());
     }
+
     IEnumerator InstatiateCustomer()
     {
+        Debug.Log($"{gameObject.name} InstatiateCustomer 시작");
+
         InitCustomer();
 
         //스폰 대기 시간 관련 변수
@@ -260,16 +307,13 @@ public class CustomerController : MonoBehaviour
 
         float spawnDelayTime = UnityEngine.Random.Range(spawnDalayMin, spawnDalayMax);
         spawnDelayTime /= Managers.Game.gameSpeed; //시간 속도
-        Debug.Log($"{spawnDelayTime}초 후 생성");
+        Debug.Log($"[{gameObject.name}] {spawnDelayTime}초 후 생성");
 
         yield return new WaitForSeconds(spawnDelayTime);
-
         customer.gameObject.SetActive(true);
         Order();
-        Debug.Log($"{NumOfFishBun}개 주문");
 
-        didAppeared = true;
-        Debug.Log($"생성");
+        Debug.Log($"{gameObject.name} InstatiateCustomer 끝");
 
         yield break;
     }

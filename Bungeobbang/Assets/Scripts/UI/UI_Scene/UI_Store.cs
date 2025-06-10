@@ -9,7 +9,7 @@ public class UI_Store : UI_Base
 
     protected override void Init()
     {
-        AddEvent(nextDayButton.gameObject, Managers.Game.runGame);
+        AddEvent(nextDayButton.gameObject, () => { Managers.Game.didDayEnd = false;  });
     }
 
 
