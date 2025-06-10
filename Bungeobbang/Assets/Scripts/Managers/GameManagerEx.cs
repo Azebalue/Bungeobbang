@@ -40,14 +40,15 @@ public class GameManagerEx
     {
         get
         {
-            return gameSpeed + Managers.Instance._gameSpeed;
+            return gameSpeed * Managers.Instance._gameSpeed;
         }
     }
 
-    //운영관련 변수
+    //운영 관련 변수
     bool hasInitialized = false; //가게 운영 시작처리했는지
     bool hasFinalized= false; //가게 운영 끝처리했는지
     bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
+
     #endregion
 
     #region 게임 요소 관련 변수
@@ -68,6 +69,25 @@ public class GameManagerEx
     GameObject[] fillingArr = new GameObject[GetEnumSize(typeof(FillingType))];
     #endregion
 
+    #region 운영 결과 관련 변수
+    public int totalFishBunsSold;      // 판매한 붕어빵 수
+    public int totalCustomers;         // 방문한 손님 수
+
+    // 오늘 매출
+    public int todayRevenue
+    {
+        get { return CurData.money - yesterdayProfit;  }
+    }
+    public int ingredientCost;         // 재료 비용
+    public int yesterdayProfit;      // 어제 수익
+    public int netProfit //오늘 순수익
+    {
+        get { return todayRevenue - ingredientCost; }
+    }
+
+
+
+    #endregion
     public event Action InitObjAction;
 
     //게임 생성 시 초기화 메서드
@@ -86,7 +106,7 @@ public class GameManagerEx
 
         //3. 데이터 초기화
         CurData.day = 0;
-        CurData.numOfFilling = 3;
+        CurData.numOfFilling = 4;
         CurData.money = 0;
 
         isRunning = true;
@@ -107,6 +127,7 @@ public class GameManagerEx
             InitDaily();
             hasInitialized = true;
         }
+
         //하루 끝 처리 (1회성)
         else if (hour >= endHour)
         {
@@ -132,24 +153,21 @@ public class GameManagerEx
 
         //1. 데이터 초기화
         hasFinalized = false;
-
-        delta = 0;
+        delta = 0; 
         ++CurData.day;
 
-        //2. UI화면
-        Managers.UI.CloseUI();
+        totalFishBunsSold = 0;      
+        totalCustomers = 0;         
+        ingredientCost = 0;
+        yesterdayProfit = CurData.money;
+
+
+    //2. UI화면
+    Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_Game>();
 
         //3. 오브젝트 활성화/비활성화 
         InitObjAction?.Invoke();
-
-/*        //3. 손님 비활성화
-        for (int i = 0; i < numsOfCustomers; ++i)
-        {
-            customerArr[i].GetComponent<CustomerController>().CoInstantiateCustomer();
-            //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
-
-        }*/
 
         //4. 필링 활성화/비활성화
         for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
@@ -178,6 +196,7 @@ public class GameManagerEx
         isRunning = true;
         hasInitialized = false;
     }
+
     //void 
     /*
         {

@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-   
+using Unity.VisualScripting;
+
 public abstract class UI_Base : MonoBehaviour
 {
     // GameObject를 Type별로 관리
@@ -24,6 +25,7 @@ public abstract class UI_Base : MonoBehaviour
         evt.OnClickHandler -= action; //액션 중복 발생 방지
         evt.OnClickHandler += action; //액션 등록
     }
+
     protected void SetWorldUI()
     {
         Canvas canvas = gameObject.GetComponent<Canvas>();
@@ -56,26 +58,35 @@ public abstract class UI_Base : MonoBehaviour
         dic.Add(typeof(T), objs);
     }
 
-/*    너무 조잡한 거같음
- *    //특정 부모 오브젝트 산하의 같은 타입의 자식obj들을 바인딩
-    protected void BindChilds<T>(Type enumName, string parentName)
+    /* 특정 부모 오브젝트 산하의 같은 타입의 자식obj들을 바인딩
+     * 이 형제 obj들은 일관된 구조로 자식이 있어서,,
+     * BindChilds와 연계해서 사용
+     */
+    protected void BindParents<T>(Type enumName, string parentName)
         where T : UnityEngine.Object
     {
         //하이어라키에서 부모를 이름으로 찾기
-        GameObject parent = Util.FindObject(parentName);
+        GameObject parent = Util.FindObject(gameObject,$"{parentName}");
 
         //찾을 자식 객체 이름을 string배열로 저장
         string[] names = Enum.GetNames(enumName);
 
         //자식 객체 저장용 배열 생성
-        UnityEngine.Object[] obj = new UnityEngine.Object[names.Length]; 
+        T[] obj = new T[names.Length]; 
 
         //자식 객체를 부모 산하에서 탐색해서 배열에 저장
         for(int i = 0; i < names.Length; i++) 
         {
+            if(typeof(T) == typeof(GameObject))
+            {
+                obj[i] = Util.FindObject(parent, names[i]) as T;
 
-            obj[i] = Util.FindComponent<T>(names[i], parent) ;
-            //Util.checkNull(obj[i]);
+            }
+            else
+            {
+                obj[i] = Util.Find<T>(parent, names[i]);
+
+            }
         }
 
         AddDictionaryValue<T>(obj);
@@ -83,11 +94,13 @@ public abstract class UI_Base : MonoBehaviour
     }
 
     //첫 번째 인수 parentEnum은 이미 바인딩 되어야, 산하의 자식 바인딩 할 수 있음
-    protected void BindChild<parentT, childT>(Type parentEnum, string childName)
+    // 수정??
+    protected void BindChilds<parentT, childT>(Type parentEnum, string childName)
         where parentT : UnityEngine.Object
         where childT : UnityEngine.Object
     {
-        UnityEngine.Object[] value = new UnityEngine.Object[Util.GetEnumSize(parentEnum)];
+        
+        childT[] value = new childT[Util.GetEnumSize(parentEnum)];
 
         //부모 오브젝트가 바인딩되어 있지 않은 경우 체크
         if (dic.ContainsKey(typeof(parentT)) == false)
@@ -99,20 +112,26 @@ public abstract class UI_Base : MonoBehaviour
         //각 부모의 자식들 탐색
         for (int i = 0; i < Util.GetEnumSize(parentEnum); ++i)
         {
-            GameObject parent = (dic[typeof(parentT)][i] as Component).gameObject; //바인딩된 부모 찾기
+            GameObject parent;
+            //바인딩된 부모 찾기
+            if (typeof(parentT) == typeof(GameObject))
+                parent = dic[typeof(GameObject)][i] as GameObject;
+            else
+                parent = (dic[typeof(parentT)][i] as Component).gameObject; 
+
             Util.checkNull(parent);
             //Debug.LogWarning($"{parent.name}");
 
-            UnityEngine.Object child;
+            childT child;
 
             //찾는 자식 오브젝트인 경우
             if (typeof(childT) == typeof(GameObject))
             {
-                child = Util.FindObject(childName, parent);
+                child = Util.FindObject(parent, childName) as childT;
             }
             else
             {
-                child = Util.FindComponent<childT>(childName, parent); //부모의 자식 찾기
+                child = Util.Find<childT>(parent, childName); //부모의 자식 찾기
 
             }
 
@@ -122,9 +141,9 @@ public abstract class UI_Base : MonoBehaviour
 
         for (int i = 0; i < value.Length; ++i)
         {
-            
-            GameObject obj = value[i] as GameObject;    
-            if(obj != null)
+
+            GameObject obj = value[i] as GameObject;
+            if (obj != null)
             {
                 Debug.Log($"{obj.name}");
 
@@ -133,7 +152,8 @@ public abstract class UI_Base : MonoBehaviour
         }
 
         AddDictionaryValue<childT>(value);
-    }*/
+    }
+
     #endregion
 
     #region Get계열 메서드
@@ -186,32 +206,40 @@ public abstract class UI_Base : MonoBehaviour
     }
     #endregion
 
-
-/*    불필요
- *    
- *    //딕셔너리에 T타입 값배열 저장하는 메서드
-    protected void AddDictionaryValue<T>(UnityEngine.Object[] obj)
-        //where T : UnityEngine.Object
+    //딕셔너리에 T타입 값배열 저장하는 메서드
+    protected void AddDictionaryValue<T>(T[] obj)
+        where T : UnityEngine.Object
     {
         //딕셔너리에 추가 [키: 자식 타입, 값: 자식 배열]
-        if (dic.ContainsKey(typeof(T)))
+        if (dic.ContainsKey(typeof(T)) == true)
         {
             //키가 이미 있기에, 기존 배열 deepCopy&값 추가한 후 배열 등록
             int arrSize = obj.Length + dic[typeof(T)].Length; //새 배열 크기 계산
-            UnityEngine.Object[] newArr = new UnityEngine.Object[arrSize]; //새 배열 생성
+            T[] newArr = new T[arrSize]; //새 배열 생성
 
             //배열 채우기
-            for(int i = 0; i < arrSize; ++i)
+            int j = 0;
+            for (int i = 0; i < arrSize; ++i)
             {
-                UnityEngine.Object element;
+                T element;
                 if (i < dic[typeof(T)].Length)
-                    element = dic[typeof(T)].GetValue(i) as UnityEngine.Object;
+                    element = dic[typeof(T)].GetValue(i) as T;
                 else
-                    element = obj[i];
+                    element = obj[j++];
 
                 newArr[i] = element;
             }
 
+            /*int 
+                        for(int i = 0; i < dic[typeof(T)].Length; ++i)
+                            newArr[i] = dic[typeof(T)].GetValue(i) as T;
+
+                        for(int i = dic[typeof(T)].Length; i < arrSize; ++i)
+                        {
+
+                            newArr[i] = obj[++j];
+                        }
+            */
             //딕셔너리에 업데이트한 배열 등록
             dic[typeof(T)] = newArr;
 
@@ -223,15 +251,15 @@ public abstract class UI_Base : MonoBehaviour
         }
 
 
-*/
+    }
 
-/*        
-        //디버깅용 코드
-        Debug.Log($"딕셔너리 내용");
-        for (int i = 0; i < dic[typeof(T)].Length; ++i)
-        {
-            Debug.Log($"{typeof(T)} : {dic[typeof(T)].GetValue(i)}");
-        }
+        /*        
+                //디버깅용 코드
+                Debug.Log($"딕셔너리 내용");
+                for (int i = 0; i < dic[typeof(T)].Length; ++i)
+                {
+                    Debug.Log($"{typeof(T)} : {dic[typeof(T)].GetValue(i)}");
+                }
 
- */
+         */
 }

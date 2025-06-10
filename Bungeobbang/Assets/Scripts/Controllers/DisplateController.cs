@@ -43,11 +43,11 @@ public class DisplateController : MonoBehaviour
         Vector3 pos = fillingPos[index];
         pos.y -= 0.2f * numsOfFishBun[index];
         fbc.spawnPos = pos;
-        Debug.Log($"{fishBun.name}의 위치: {pos.x}, {pos.y}");
+        //Debug.Log($"{fishBun.name}의 위치: {pos.x}, {pos.y}");
 
         //sprite_order 조정
         fishBun.GetComponent<SpriteRenderer>().sortingOrder = numsOfFishBun[index];
-        Debug.Log($"{fishBun.name}의 order: {fishBun.GetComponent<SpriteRenderer>().sortingOrder}");
+        //Debug.Log($"{fishBun.name}의 order: {fishBun.GetComponent<SpriteRenderer>().sortingOrder}");
 
         ++numsOfFishBun[index];
 

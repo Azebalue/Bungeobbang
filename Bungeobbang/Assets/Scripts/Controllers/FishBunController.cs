@@ -165,37 +165,43 @@ public class FishBunController : MonoBehaviour,
 
     void addFilling()
     {
-        if (IngredientController.selectedThing.CompareTag("filling"))
-        {
-            filling.SetActive(true);
-            fillingType = IngredientController.selectedThing.filling;
-            filling.GetComponent<SpriteRenderer>().sprite
-                = Managers.Resource.LoadSprite("fillingChunks", (int)fillingType);
+        if (IngredientController.selectedThing.CompareTag("filling") == false)
+            return;
 
-            ++state;
-        }
+        filling.SetActive(true);
+        fillingType = IngredientController.selectedThing.filling;
+        filling.GetComponent<SpriteRenderer>().sprite
+            = Managers.Resource.LoadSprite("fillingChunks", (int)fillingType);
 
+
+        ++state;
+
+        //재료 비용 통계
+        Managers.Game.ingredientCost -= (int) (Define.FillingPrice[(int)fillingType] * 0.4f);
+        Debug.Log($"{(int) (Define.FillingPrice[(int)fillingType] * 0.3f)}원의 소");
     }
 
     void addBatter()
     {
-        if (IngredientController.selectedThing.CompareTag("kettle"))
-        {
-            startDelta = Managers.Game.delta; //1단계 굽기 측정 시작
+        if (IngredientController.selectedThing.CompareTag("kettle") == false)
+            return;
 
-            GetComponent<SpriteRenderer>().sprite =
-                Managers.Resource.LoadSprite("FishBunState_proto", (int)CookingState.topBatter-1);
+        
+        startDelta = Managers.Game.delta; //1단계 굽기 측정 시작
 
-            //layer 우선순위 처리
-            //미구현
-            //붕어빵 내용물 투명도 처리
+        GetComponent<SpriteRenderer>().sprite =
+            Managers.Resource.LoadSprite("FishBunState_proto", (int)CookingState.topBatter-1);
+
+        //layer 우선순위 처리
+        //미구현
+        //붕어빵 내용물 투명도 처리
 /*            SpriteRenderer sr = filling.GetComponent<SpriteRenderer>();
-            Color color = sr.color; 
-            color.a = 0.5f;
-            sr.color = color;*/
+        Color color = sr.color; 
+        color.a = 0.5f;
+        sr.color = color;*/
 
-            ++state;
-        }
+        ++state;
+        
     }
 
     void baking()

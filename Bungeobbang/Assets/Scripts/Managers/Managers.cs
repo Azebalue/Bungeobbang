@@ -1,5 +1,4 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -41,9 +40,8 @@ public class Managers : MonoBehaviour
         if(_instance == null)
         {
             GameObject go = GameObject.Find("@Managers");
-            _instance = go.GetOrAddComponent<Managers>();
+            _instance = Util.GetOrAddComponent<Managers>(go);
 
-            //GetOrAddComponent°¡... ?
         }
 
     }

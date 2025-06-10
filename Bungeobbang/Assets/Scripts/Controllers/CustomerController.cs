@@ -6,8 +6,8 @@ using UnityEngine;
 public class CustomerController : MonoBehaviour
 {
     CustomerData CustomerData; //SO 데이터
-    static int level = 1; //손님 레벨
-    static int Ex; //누적 손님 만족도
+/*    static int level = 1; //손님 레벨
+    static int Ex; //누적 손님 만족도*/
 
     #region 게임 오브젝트 관련 변수
     UI_Order ui_order;
@@ -105,13 +105,17 @@ public class CustomerController : MonoBehaviour
     int reactionTime = 1;
     #endregion
 
-    bool didInstat = false;
+    bool didInstatiated = false;
 
     void Awake()
     {
         Managers.Game.InitObjAction -= CoInstantiateCustomer;
         Managers.Game.InitObjAction +=  CoInstantiateCustomer;
+
+/*        Managers.Game.InitObjAction -= CoInstantiateCustomer;
+        Managers.Game.InitObjAction += CoInstantiateCustomer;*/
     }
+
     void Update()
     {
         //플레이어 존재
@@ -121,10 +125,10 @@ public class CustomerController : MonoBehaviour
         }
         else
         {
-            if(didInstat == false)
+            if(didInstatiated == false)
             {
                 StartCoroutine(Exit()); //퇴장
-                didInstat = true;
+                didInstatiated = true;
             }
         }
 
@@ -161,7 +165,6 @@ public class CustomerController : MonoBehaviour
 
         //주문 내역 비우기
         order.Clear();
-        //Debug.Log($"{gameObject.name}주문 비우기\n {order.Count}개");
 
         //맛 중복 방지를 위한 범위 리스트
         List<int> orderableFillingType = new List<int>();
@@ -172,7 +175,6 @@ public class CustomerController : MonoBehaviour
 
         //1. 주문할 붕어빵 개수
         NumOfFishBun = UnityEngine.Random.Range(minFishBun, maxFishBun + 1);
-
         //Debug.Log($"[Order]{gameObject.name}의 주문 : 총 {NumOfFishBun}개");
 
         //붕어빵 랜덤 종류*개수 
@@ -257,6 +259,9 @@ public class CustomerController : MonoBehaviour
         //다시 업뎃
         UI_order.SetOrderText(order);
 
+        //통계 업뎃
+        ++Managers.Game.totalFishBunsSold;
+        
 
     }
 
@@ -303,17 +308,20 @@ public class CustomerController : MonoBehaviour
         //Debug.Log($"{gameObject.name} InstatiateCustomer 시작");
 
         InitCustomer();
+        ++Managers.Game.totalCustomers;
 
         //스폰 대기 시간 관련 변수
-        float spawnDalayMin = 2f;
+        float spawnDalayMin = 3f;
         float spawnDalayMax = 8f;
 
         float spawnDelayTime = UnityEngine.Random.Range(spawnDalayMin, spawnDalayMax);
-        Debug.Log($"[{gameObject.name}] 1. {spawnDelayTime}초 후 생성");
+        Debug.Log($"1. {spawnDelayTime} 초 후 생성");
+
         spawnDelayTime /= Managers.Game.GameSpeed; //시간 속도
-        Debug.Log($"[{gameObject.name}] 2. {spawnDelayTime}초 후 생성");
+        Debug.Log($"2. {spawnDelayTime} 초 후 생성");
 
         yield return new WaitForSeconds(spawnDelayTime);
+
         customer.gameObject.SetActive(true);
         Order();
 

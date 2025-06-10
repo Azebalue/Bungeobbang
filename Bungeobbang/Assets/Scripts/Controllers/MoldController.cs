@@ -8,7 +8,10 @@ public class MoldController : MonoBehaviour
     bool isFilled = false;
     public bool IsFilled
     {
-        set { isFilled = value; }
+        set {
+            if(value == false)
+                Debug.Log($"{gameObject.name} ¸ôµå ºñ¿öÁü");
+            isFilled = value; }
     }
 
     string fishBun = "fishBun";
@@ -21,7 +24,7 @@ public class MoldController : MonoBehaviour
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (IngredientController.selectedThing == null)
+        if (IngredientController.selectedThing == null || isFilled == true)
             return;
 
         if (isFilled == false)
@@ -37,6 +40,9 @@ public class MoldController : MonoBehaviour
         {
             GameObject _fishBun = Managers.Resource.Instantiate($"Prefabs/{fishBun}");
             _fishBun.GetComponent<FishBunController>().Set(transform.position, gameObject);
+
+            //Àç·áºñ Åë°è
+            Managers.Game.ingredientCost += Define.BatterCost; //¹ÝÁ× ¿ø°¡ 
         }
 
 
@@ -46,8 +52,13 @@ public class MoldController : MonoBehaviour
     {
         isFilled = false;
 
-        if(transform.childCount > 0) 
-            Destroy(transform.GetChild(0).gameObject);
+        //ºØ¾î»§ ÀüÃ¼ »èÁ¦
+        int childCount = transform.childCount;
+        if (childCount == 0)
+            return;
+
+        for (int i = 0; i < childCount; ++i)
+            Destroy(transform.GetChild(i).gameObject);
 
     }
 }

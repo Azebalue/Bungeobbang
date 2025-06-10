@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 1973121703392272989}
   - component: {fileID: 2775082518117919602}
   m_Layer: 5
-  m_Name: btn
+  m_Name: Btn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -971,7 +971,7 @@ GameObject:
   - component: {fileID: 5134596411619137077}
   - component: {fileID: 8335932041736220358}
   m_Layer: 5
-  m_Name: checkButton
+  m_Name: CheckButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1358,7 +1358,7 @@ GameObject:
   - component: {fileID: 2140914141421808197}
   - component: {fileID: 6695032897605158176}
   m_Layer: 5
-  m_Name: spirit
+  m_Name: customer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1444,10 +1444,10 @@ RectTransform:
   m_Children:
   - {fileID: 7909122144214566905}
   - {fileID: 1338272842500301213}
+  - {fileID: 2140914141421808197}
   - {fileID: 898886974478108226}
   - {fileID: 4359609159306054140}
   - {fileID: 2070114216617563761}
-  - {fileID: 2140914141421808197}
   - {fileID: 1973121703392272989}
   m_Father: {fileID: 4434069136112843905}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

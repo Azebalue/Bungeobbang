@@ -31,7 +31,7 @@ public class UI_Order : UI_Base
         orderText.text = null;
 
         foreach (var order in orders)
-            orderText.text += $"{order.Key} ¸À * {order.Value}°³ \n";
+            orderText.text += $"{Define.FillingText[(int)order.Key]} * {order.Value}°³ \n";
 
     }
 

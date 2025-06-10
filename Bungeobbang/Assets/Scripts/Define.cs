@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using Unity.Burst.CompilerServices;
 
 [Serializable]
 public enum CookingState
@@ -53,6 +51,8 @@ public class Define
     public static string BatterString = "Batter";
     public static string FillingString = "Filling";
 
+    public static int BatterCost = 100;
+
     public static int[] FillingPrice=
     {
         500,
@@ -65,6 +65,25 @@ public class Define
         1200,
 
 
+    };
+    public static string[] FillingText =
+    {
+        "ÆÏ ºØ¾î»§",
+        "½´Å©¸² ºØ¾î»§",
+        "ÃÊÄÚ ºØ¾î»§",
+        "Å©¸²Ä¡Áî ºØ¾î»§",
+        "ÇÇÀÚ ºØ¾î»§",
+        "¹ÎÆ® ºØ¾î»§",
+        "°í±¸¸¶ ºØ¾î»§",
+        "³ìÂ÷ ºØ¾î»§",
+    };
+    public static string[] dayEndPanelText =
+    {
+        "ÇÏ·ç ÆÇ¸Å ºØ¾î»§",
+        "ÇÏ·ç ´©Àû ¼Õ´Ô ¼ö",
+        "¿À´Ã ¸ÅÃâ",
+        "Àç·á ºñ¿ë",
+        "¿µ¾÷ÀÌÀÍ",
     };
 
 }
