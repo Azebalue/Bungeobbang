@@ -21,11 +21,11 @@ public class UI_DayEnd : UI_Base
 
     string[] result =
     {
-        $"{Managers.Game.totalFishBunsSold} 개",
+        $"{Managers.Game.totalFishBunsSold } 개",
         $"{Managers.Game.totalCustomers} 명",
-        $"{Managers.Game.todayRevenue} 원",
-        $"{-Managers.Game.IngredientCost} 원",
-        $"{Managers.Game.netProfit} 원"
+        $"{Managers.Game.todayRevenue.ToString("N0")} 원",
+        $"{(-Managers.Game.IngredientCost).ToString("N0")} 원",
+        $"{Managers.Game.netProfit.ToString("N0")} 원"
     };
 
     protected override void Init()
@@ -43,7 +43,7 @@ public class UI_DayEnd : UI_Base
         for (int index = 0; index < size  * 2; ++index)
         {
             if(index < size)
-                GetTMP(index).text = Define.dayEndPanelText[index];
+                GetTMP(index).text = Define.UI_DayEndText[index];
             else
                 GetTMP(index).text = result[index - size];
 

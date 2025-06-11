@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class IngredientController : MonoBehaviour
+public class ToolController : MonoBehaviour
 {
-    public static IngredientController selectedThing;
+    public static ToolController selectedTool;
     [SerializeField] public FillingType filling;
 
     Vector3 moveDir = new Vector3(0, 1, 0);
@@ -31,7 +31,7 @@ public class IngredientController : MonoBehaviour
     void OnMouseDown()
     {
         //선택된 이전 물건이 있었으면
-        if (selectedThing != null)
+        if (selectedTool != null)
             pickDown(); //이전 pickup 물건 내려 놓기
 
         pickUp();
@@ -47,25 +47,25 @@ public class IngredientController : MonoBehaviour
         transform.localScale = originScale;
 
         GetComponent<SpriteRenderer>().sortingOrder = maxSortingOrder;
-        selectedThing = this;
+        selectedTool = this;
 
     }
 
     //객체 내려놓는 메서드
     void pickDown()
     {
-        selectedThing.transform.position -= moveDir;
+        selectedTool.transform.position -= moveDir;
         transform.localScale = Vector3.one;
-        selectedThing.transform.rotation = Quaternion.Euler(0, 0, selectedThing.originZRotation);
+        selectedTool.transform.rotation = Quaternion.Euler(0, 0, selectedTool.originZRotation);
         transform.localScale = originScale;
-        selectedThing.GetComponent<SpriteRenderer>().sortingOrder = selectedThing.originSortingOrder;
-        selectedThing = null;
+        selectedTool.GetComponent<SpriteRenderer>().sortingOrder = selectedTool.originSortingOrder;
+        selectedTool = null;
     }
 
     void InitIngredient()
     {
-        if(selectedThing != null)
-            selectedThing.pickDown();
+        if(selectedTool != null)
+            selectedTool.pickDown();
 
     }
 }

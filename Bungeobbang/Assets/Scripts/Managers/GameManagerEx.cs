@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static Util;
 
@@ -47,7 +48,7 @@ public class GameManagerEx
     //운영 관련 변수
     bool hasInitialized = false; //가게 운영 시작처리했는지
     bool hasFinalized= false; //가게 운영 끝처리했는지
-    bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
+    public bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
 
     #endregion
 
@@ -94,6 +95,10 @@ public class GameManagerEx
 
 
     #endregion
+
+    //현재 주문 
+    public static Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
+
     public event Action InitObjAction;
 
     //게임 생성 시 초기화 메서드
@@ -167,6 +172,8 @@ public class GameManagerEx
         ingredientCost = 0;
         yesterdayProfit = CurData.money;
 
+        order.Clear();
+
 
     //2. UI화면
     Managers.UI.CloseUI();
@@ -208,86 +215,25 @@ public class GameManagerEx
         hasInitialized = false;
     }
 
-    //void 
-    /*
+    public void acceptOrder(Dictionary<FillingType, int> orders)
+    {
+        Debug.Log("주문 받음");
+        foreach (var _order in orders)
         {
-
-            if (didDayEnd == true)
-                return;
-
-            Debug.Log("게임 플레이");
-
-            //1. 5시간 붕어빵 가게 운영
-            if (shouldStop == false)
+            if (order.TryGetValue(_order.Key, out int count) == true)
             {
-                //1-1. 하루 시작
-                if (didInitDay == false)
-                {
-                    InitDaily();
-                    didInitDay = true;
-
-                }
-
-                //1-2. 운영 중 시간 카운팅
-                delta += gameSpeed * Time.deltaTime * Managers.Instance._gameSpeed;
-
-                //1-3. 운영 종료
-                if (hour >= endHour)
-                {
-                    shouldStop = true;
-                    didInitDay = false;
-
-                }
+                Debug.Log($"{_order.Key} 이미 있음");
+                order[_order.Key] += count;
             }
-            //2. 운영 결과 UI & 상점 UI
             else
             {
-                //하루 종료 처리했는지
-                if (hasDayEnd == false)
-                {
-                    Managers.UI.CloseUI();
-                    Managers.UI.ShowUI<UI_DayEnd>();
-                    hasDayEnd = true;
-                    didDayEnd = true;
-
-                }
+                Debug.Log($"{_order.Key} 새로운 맛 주문 받음");
+                order.Add(_order.Key, _order.Value);
             }
+
         }
+    }
 
-        //내일 초기화 & 시작
-        public void InitDaily()
-        {
-            //1. 데이터 init
-            shouldStop = false;
-            delta = 0;
-            ++CurData.day;
-
-            hasDayEnd = false;
-            didInitDay = true;
-
-            //2. UI화면
-            Managers.UI.CloseUI();
-            Managers.UI.ShowUI<UI_Game>();
-
-            //3. 손님 비활성화
-            for (int i = 0; i < numsOfCustomers; ++i)
-            {
-                customerArr[i].GetComponent<CustomerController>().CoInstantiateCustomer();
-                //customerArr[i].GetComponent<CustomerController>().Customer.SetActive(false); //비활성화
-
-            }
-
-            //4. 필링 활성화/비활성화
-            for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
-            {
-                if (i < Managers.Game.CurData.numOfFilling)
-                    fillingArr[i].SetActive(true);
-                else
-                    fillingArr[i].SetActive(false);
-            }
-
-
-        }*/
 
 
 }

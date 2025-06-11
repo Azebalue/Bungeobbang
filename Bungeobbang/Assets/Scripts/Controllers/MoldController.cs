@@ -30,7 +30,10 @@ public class MoldController : MonoBehaviour
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (IngredientController.selectedThing == null || IsFilled == true)
+        if (Managers.Game.isRunning == false)
+            return;
+
+        if (ToolController.selectedTool == null || IsFilled == true)
             return;
 
         if (IsFilled == false)
@@ -42,7 +45,7 @@ public class MoldController : MonoBehaviour
 
     void InstanciateFishBun()
     {
-        if(IngredientController.selectedThing.CompareTag("kettle"))
+        if(ToolController.selectedTool.CompareTag("kettle"))
         {
             GameObject _fishBun = Managers.Resource.Instantiate($"Prefabs/{fishBun}");
             _fishBun.GetComponent<FishBunController>().Set(transform.position, gameObject);

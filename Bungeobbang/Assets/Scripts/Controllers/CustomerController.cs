@@ -1,9 +1,9 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
-public class CustomerController : MonoBehaviour
+public class CustomerController : MonoBehaviour, IPointerClickHandler
 {
     CustomerData CustomerData; //SO 데이터
 /*    static int level = 1; //손님 레벨
@@ -107,18 +107,26 @@ public class CustomerController : MonoBehaviour
 
     bool didInstatiated = false;
 
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        //주문 받음
+        Order();
+        Managers.Game.acceptOrder(order);
+        
+    }
+
     void Awake()
     {
         Managers.Game.InitObjAction -= CoInstantiateCustomer;
         Managers.Game.InitObjAction +=  CoInstantiateCustomer;
 
-/*        Managers.Game.InitObjAction -= CoInstantiateCustomer;
-        Managers.Game.InitObjAction += CoInstantiateCustomer;*/
     }
 
     void Update()
     {
-        //플레이어 존재
+        if (Managers.Game.isRunning == false)
+            return;
+
         if (AngryPoint < 100)
         {
             UI_order.slider.value = AngryPoint;
@@ -315,19 +323,19 @@ public class CustomerController : MonoBehaviour
         float spawnDalayMax = 8f;
 
         float spawnDelayTime = UnityEngine.Random.Range(spawnDalayMin, spawnDalayMax);
-        Debug.Log($"1. {spawnDelayTime} 초 후 생성");
-
+        //Debug.Log($"1. {spawnDelayTime} 초 후 생성");
         spawnDelayTime /= Managers.Game.GameSpeed; //시간 속도
-        Debug.Log($"2. {spawnDelayTime} 초 후 생성");
+        //Debug.Log($"2. {spawnDelayTime} 초 후 생성");
 
         yield return new WaitForSeconds(spawnDelayTime);
 
         customer.gameObject.SetActive(true);
-        Order();
+        //Order();
 
         //Debug.Log($"{gameObject.name} InstatiateCustomer 끝");
 
         yield break;
     }
+
 
 }

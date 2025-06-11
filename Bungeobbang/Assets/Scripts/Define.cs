@@ -78,7 +78,8 @@ public class Define
         "고구마 붕어빵",
         "녹차 붕어빵",
     };
-    public static string[] dayEndPanelText =
+
+    public static string[] UI_DayEndText =
     {
         "하루 판매 붕어빵",
         "하루 누적 손님 수",
@@ -86,5 +87,14 @@ public class Define
         "재료 비용",
         "영업이익",
     };
+    public static string[] UI_StoreText =
+    {
+/*        "상점",
+        "돈",*/
 
+        "재료",
+        "스킬",
+        "도구",
+        "홍보",
+    };
 }

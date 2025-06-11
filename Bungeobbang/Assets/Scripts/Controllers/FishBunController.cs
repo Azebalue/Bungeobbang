@@ -166,11 +166,11 @@ public class FishBunController : MonoBehaviour,
 
     void addFilling()
     {
-        if (IngredientController.selectedThing.CompareTag("filling") == false)
+        if (ToolController.selectedTool.CompareTag("filling") == false)
             return;
 
         filling.SetActive(true);
-        fillingType = IngredientController.selectedThing.filling;
+        fillingType = ToolController.selectedTool.filling;
         filling.GetComponent<SpriteRenderer>().sprite
             = Managers.Resource.LoadSprite("fillingChunks", (int)fillingType);
 
@@ -179,12 +179,12 @@ public class FishBunController : MonoBehaviour,
 
         //재료 비용 통계
         Managers.Game.IngredientCost += (int) (Define.FillingPrice[(int)fillingType] * Define.FillingCostRate);
-        Debug.Log($"{(int) (Define.FillingPrice[(int)fillingType] * Define.FillingCostRate)}원의 소");
+        //Debug.Log($"{(int) (Define.FillingPrice[(int)fillingType] * Define.FillingCostRate)}원의 소");
     }
 
     void addBatter()
     {
-        if (IngredientController.selectedThing.CompareTag("kettle") == false)
+        if (ToolController.selectedTool.CompareTag("kettle") == false)
             return;
 
         
