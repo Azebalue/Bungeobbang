@@ -97,7 +97,7 @@ public class GameManagerEx
     #endregion
 
     //현재 주문 
-    public static Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
+    public Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
 
     public event Action InitObjAction;
 

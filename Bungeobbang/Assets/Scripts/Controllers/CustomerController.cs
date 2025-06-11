@@ -112,7 +112,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         //주문 받음
         Order();
         Managers.Game.acceptOrder(order);
-        
+        UI_Game.orderUpdateAction?.Invoke();
     }
 
     void Awake()
