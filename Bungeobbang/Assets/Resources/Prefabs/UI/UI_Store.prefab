@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 337716962300440753}
   - component: {fileID: 4352821562687903060}
   m_Layer: 5
-  m_Name: Money
+  m_Name: MoneyPanel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2275,7 +2275,7 @@ GameObject:
   - component: {fileID: 8712617348872881698}
   - component: {fileID: 6408596601681349304}
   m_Layer: 5
-  m_Name: moneyText
+  m_Name: MoneyText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2638,7 +2638,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74c31b260462f814aa157a8d5e0f37a8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  nextDayButton: {fileID: 4366277443322206004}
 --- !u!1 &8936717956495107003
 GameObject:
   m_ObjectHideFlags: 0

@@ -88,7 +88,7 @@ public class GameManagerEx
     public int netProfit //오늘 순수익
     {
         get {
-            Debug.Log($"netProfit: {todayRevenue} - {ingredientCost} = {todayRevenue - ingredientCost}");
+            //Debug.Log($"netProfit: {todayRevenue} - {ingredientCost} = {todayRevenue - ingredientCost}");
             return  (todayRevenue - ingredientCost); }
     }
 
@@ -97,7 +97,16 @@ public class GameManagerEx
     #endregion
 
     //현재 주문 
-    public Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
+    Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
+    public Dictionary<FillingType, int> Order
+    {
+        get { return order; }
+        set
+        {
+
+            order = value;
+        }
+    }
 
     public event Action InitObjAction;
 
@@ -172,11 +181,10 @@ public class GameManagerEx
         ingredientCost = 0;
         yesterdayProfit = CurData.money;
 
-        order.Clear();
 
 
-    //2. UI화면
-    Managers.UI.CloseUI();
+        //2. UI화면
+        Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_Game>();
 
         //3. 오브젝트 활성화/비활성화 
@@ -197,6 +205,7 @@ public class GameManagerEx
         Debug.Log("2. 하루 끝 ");
 
         isRunning = false;
+        order.Clear();
 
         //정산
         todayRevenue = CurData.money - yesterdayProfit;
@@ -213,27 +222,59 @@ public class GameManagerEx
 
         isRunning = true;
         hasInitialized = false;
+
     }
 
+    #region 주문
     public void acceptOrder(Dictionary<FillingType, int> orders)
     {
-        Debug.Log("주문 받음");
         foreach (var _order in orders)
         {
-            if (order.TryGetValue(_order.Key, out int count) == true)
+            if(order.ContainsKey(_order.Key) == true)
             {
-                Debug.Log($"{_order.Key} 이미 있음");
-                order[_order.Key] += count;
+                order[_order.Key] += _order.Value;
+                //Debug.Log($"{_order.Key}: {_order.Value} += {order[_order.Key]}개");
+
             }
             else
             {
-                Debug.Log($"{_order.Key} 새로운 맛 주문 받음");
+                //Debug.Log($"{_order.Key} 새로운 맛 주문 받음");
                 order.Add(_order.Key, _order.Value);
             }
 
         }
+
+        UI_Game.orderUpdateAction?.Invoke();
+
     }
 
+    public void serveOrder(Dictionary<FillingType, int> orders, FillingType filling)
+    {
+        if (orders.ContainsKey(filling) == false)
+            return;
 
+        if(--Order[filling] == 0)
+            Order.Remove(filling);
 
+        UI_Game.orderUpdateAction?.Invoke();
+    }
+
+    public void cancelOrder(Dictionary<FillingType, int> orders)
+    {
+        foreach (var order in orders)
+        {
+            //Debug.Log($"주문 취소 {order.Key}: {Order[order.Key]} - {order.Value}");
+
+            Order[order.Key] -= order.Value;
+            //Debug.Log($"주문 취소 결과 {Order[order.Key]}");
+
+            if (Order[order.Key] == 0)
+                Order.Remove(order.Key);
+
+        }
+
+        UI_Game.orderUpdateAction?.Invoke();
+
+    }
+    #endregion
 }

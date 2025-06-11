@@ -13,9 +13,9 @@ public class MoldController : MonoBehaviour
             return isFilled;
         }
         set {
-            if(value == false)
+            if (value == false)
                 Debug.Log($"{gameObject.name} ¸ôµå ºñ¿öÁü");
-            isFilled = value; 
+            isFilled = value;
         }
 
     }
@@ -30,10 +30,7 @@ public class MoldController : MonoBehaviour
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (Managers.Game.isRunning == false)
-            return;
-
-        if (ToolController.selectedTool == null || IsFilled == true)
+        if (Managers.Game.isRunning == false || ToolController.selectedTool == null)
             return;
 
         if (IsFilled == false)

@@ -37,20 +37,13 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
     #endregion
 
     #region 주문 관련 변수
+    bool didAcceptOrder = false;
     Dictionary<FillingType, int> order = new Dictionary<FillingType, int>(); //붕어빵 종류, 개수
-    static Dictionary<FillingType, int> allOrder
-        = new Dictionary<FillingType, int>(); //주문 전체
     int numsOfFishBun; //주문하는 붕빵 개수
     public int NumOfFishBun
     {
-        get
-        {
-            return numsOfFishBun;
-        }
-        set
-        {
-            numsOfFishBun = value;
-        }
+        get{ return numsOfFishBun; }
+        set { numsOfFishBun = value; }
     }
 
     //붕어빵 주문 개수 범위
@@ -68,21 +61,14 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         get
         {
             angryPoint = orderAngryPoint + (int)WaitingTime;
-
-            if (angryPoint >= 100)
-            {
-
-                return 100;
-            }
-            else
-                return angryPoint;
+            angryPoint = Mathf.Clamp(angryPoint, 0, 100);
+            return angryPoint;
 
         }
         set
         {
-            AngryPoint = Mathf.Clamp(value, 0, 100);
+            angryPoint = Mathf.Clamp(value, 0, 100);
             //Debug.Log($"angryPoint: {value} => {angryPoint} VS {AngryPoint}");
-
         }
     }
 
@@ -109,10 +95,14 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        //주문 받음
+        if (didAcceptOrder == true)
+            return;
+
+        //주문
         Order();
+        //주문 받음
         Managers.Game.acceptOrder(order);
-        UI_Game.orderUpdateAction?.Invoke();
+        didAcceptOrder = true;
     }
 
     void Awake()
@@ -135,7 +125,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         {
             if(didInstatiated == false)
             {
-                StartCoroutine(Exit()); //퇴장
+                StartCoroutine(Exit(true)); //퇴장
                 didInstatiated = true;
             }
         }
@@ -145,7 +135,6 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     public void InitCustomer()
     {
-        Debug.Log("손님 초기화");
 
         UI_order.gameObject.SetActive(false);
         Customer.gameObject.SetActive(false);
@@ -165,7 +154,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         customer.gameObject.AddComponent<PolygonCollider2D>();
 
         pay = 0;
-
+        didAcceptOrder = false;
     }
 
     public void Order()
@@ -214,6 +203,9 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     public void Eat(FillingType filling, QualityStatus baking)
     {
+        Managers.Game.serveOrder(order, filling);
+
+        //분노Point 판정
         int perfectPoint = (100 / NumOfFishBun);
         int normalPoint = (int)(perfectPoint * 0.8);
         int disappointPoint = 20;
@@ -273,14 +265,18 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     }
 
-    IEnumerator Exit()
+    IEnumerator Exit(bool isAngry = false)
     {
         //Debug.Log($" {gameObject.name} Exit 시작");
 
         //반응 효과
         Sprite reaction;
-        if (AngryPoint >= 100)
+        if (isAngry == true)
+        {
             reaction = CustomerData.GetImage(2); //불만족
+            if(didAcceptOrder == true)
+                Managers.Game.cancelOrder(order); //주문 취소
+        }
         else
             reaction = CustomerData.GetImage(1); //만족
 
@@ -305,7 +301,6 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     }
 
-
     public void CoInstantiateCustomer()
     {
         StartCoroutine(InstatiateCustomer());
@@ -313,7 +308,8 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     IEnumerator InstatiateCustomer()
     {
-        //Debug.Log($"{gameObject.name} InstatiateCustomer 시작");
+        if (Managers.Game.isRunning == false)
+            yield break;
 
         InitCustomer();
         ++Managers.Game.totalCustomers;

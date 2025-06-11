@@ -2,7 +2,6 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 using UnityEngine;
-using JetBrains.Annotations;
 
 public class UI_Game : UI_Base
 {
@@ -18,8 +17,7 @@ public class UI_Game : UI_Base
         toggleViewButton,
     }
 
-    GameObject ordersPanel;
-    GameObject[] orders = new GameObject[Managers.Game.CurData.numOfFilling];
+    static GameObject ordersPanel;
 
     #endregion
 
@@ -37,8 +35,6 @@ public class UI_Game : UI_Base
         Bind<TextMeshProUGUI>(typeof(TMP));
         Bind<Button>(typeof(Btns));
 
-        ordersPanel = Util.FindObject(gameObject, "ordersPanel");
-
         //데이터
         GetTMP((int)TMP.dayText).text = $"Day {Managers.Game.CurData.day}";
         GetTMP((int)TMP.moneyText).text = $"{Managers.Game.CurData.money.ToString("N0")} 원";
@@ -46,16 +42,16 @@ public class UI_Game : UI_Base
         GetButton((int)Btns.settingsButton).gameObject.AddEvent(settingsBtnFunc);
 
         //이벤트 구독
+
         orderUpdateAction -= orderUpdate;
         orderUpdateAction += orderUpdate;
 
-        orderUpdateAction.Invoke();
-
+        ordersPanel = Util.FindObject(gameObject, "ordersPanel");
 
     }
 
-    
-    private void Update()
+
+    void Update()
     {
         //분은 10의 단위로만 바꿈
         GetTMP((int)TMP.timeText).text = ($"{Managers.Game.hour} : {minute}0");
@@ -70,14 +66,15 @@ public class UI_Game : UI_Base
         //Managers.UI.ShowUI<>();
     }
 
-    public void orderUpdate()
+    static void orderUpdate()
     {
-        int i = 0;
-        GameObject panel;
-        //주믄된 양 표시
-        foreach (var order in Managers.Game.order)
+        int numOfPanel = 0;
+        GameObject panel; //ordersPanel산하의 panel
+
+        //주문 종류&개수UI 표시
+        foreach (var order in Managers.Game.Order)
         {
-            panel = ordersPanel.transform.GetChild(i).gameObject;
+            panel = ordersPanel.transform.GetChild(numOfPanel).gameObject;
             
             panel.SetActive(true);
             panel.transform.GetChild(0).GetComponent<Image>().sprite =
@@ -85,14 +82,15 @@ public class UI_Game : UI_Base
             panel.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text =
                 order.Value.ToString();
 
-            ++i;
+            ++numOfPanel;
 
         }
 
         //나머지 비활성화
-        for(int j = i;  j < ordersPanel.transform.childCount; ++j)
+        Util.checkNull(ordersPanel);
+        for(int j = numOfPanel;  j < ordersPanel.transform.childCount; ++j)
         {
-            panel = ordersPanel.transform.GetChild(i).gameObject;
+            panel = ordersPanel.transform.GetChild(j).gameObject;
             panel.SetActive(false);
         }
     }

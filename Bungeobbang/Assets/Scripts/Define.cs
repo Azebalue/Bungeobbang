@@ -89,9 +89,6 @@ public class Define
     };
     public static string[] UI_StoreText =
     {
-/*        "상점",
-        "돈",*/
-
         "재료",
         "스킬",
         "도구",
