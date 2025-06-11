@@ -107,15 +107,20 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     void Awake()
     {
-        Managers.Game.InitObjAction -= CoInstantiateCustomer;
-        Managers.Game.InitObjAction +=  CoInstantiateCustomer;
+        Managers.Game.InitAction -= CoInstantiateCustomer;
+        Managers.Game.InitAction +=  CoInstantiateCustomer;
 
     }
 
     void Update()
     {
         if (Managers.Game.isRunning == false)
+        {
+            customer.SetActive(false);
+            UI_order.gameObject.SetActive(false);
             return;
+        }
+            
 
         if (AngryPoint < 100)
         {
@@ -326,9 +331,6 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         yield return new WaitForSeconds(spawnDelayTime);
 
         customer.gameObject.SetActive(true);
-        //Order();
-
-        //Debug.Log($"{gameObject.name} InstatiateCustomer ³¡");
 
         yield break;
     }

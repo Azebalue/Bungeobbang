@@ -28,8 +28,8 @@ public class DisplateController : MonoBehaviour
 
     private void Awake()
     {
-        Managers.Game.InitObjAction -= Init;
-        Managers.Game.InitObjAction += Init;
+        Managers.Game.InitAction -= Init;
+        Managers.Game.InitAction += Init;
     }
 
     static public void Set(GameObject fishBun)

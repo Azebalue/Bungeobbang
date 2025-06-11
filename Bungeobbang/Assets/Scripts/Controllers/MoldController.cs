@@ -24,8 +24,8 @@ public class MoldController : MonoBehaviour
 
     void Awake()
     {
-        Managers.Game.InitObjAction -= InitMold;
-        Managers.Game.InitObjAction += InitMold;
+        Managers.Game.InitAction -= InitMold;
+        Managers.Game.InitAction += InitMold;
     }
 
     public void OnPointerClick(PointerEventData eventData)

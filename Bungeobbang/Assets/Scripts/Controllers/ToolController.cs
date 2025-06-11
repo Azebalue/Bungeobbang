@@ -17,8 +17,8 @@ public class ToolController : MonoBehaviour
 
     void Awake()
     {
-        Managers.Game.InitObjAction -= InitIngredient;
-        Managers.Game.InitObjAction += InitIngredient;
+        Managers.Game.InitAction -= InitIngredient;
+        Managers.Game.InitAction += InitIngredient;
     }
 
     void Start()

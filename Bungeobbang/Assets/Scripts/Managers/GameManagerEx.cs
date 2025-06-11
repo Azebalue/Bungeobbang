@@ -71,6 +71,7 @@ public class GameManagerEx
     #endregion
 
     #region 운영 결과 관련 변수
+
     public int totalFishBunsSold;      // 판매한 붕어빵 수
     public int totalCustomers;         // 방문한 손님 수
 
@@ -101,14 +102,10 @@ public class GameManagerEx
     public Dictionary<FillingType, int> Order
     {
         get { return order; }
-        set
-        {
-
-            order = value;
-        }
+        set { order = value; }
     }
 
-    public event Action InitObjAction;
+    public event Action InitAction;
 
     //게임 생성 시 초기화 메서드
     public void InitGame()
@@ -149,7 +146,7 @@ public class GameManagerEx
         }
 
         //하루 끝 처리 (1회성)
-        else if (hour >= endHour)
+        else if (hour >= endHour )
         {
 
             if (hasFinalized == false)
@@ -167,6 +164,7 @@ public class GameManagerEx
         }
     }
 
+    #region 하루 루틴 처리
     void InitDaily()
     {
         Debug.Log("1. 하루 시작");
@@ -188,7 +186,7 @@ public class GameManagerEx
         Managers.UI.ShowUI<UI_Game>();
 
         //3. 오브젝트 활성화/비활성화 
-        InitObjAction?.Invoke();
+        InitAction?.Invoke();
 
         //4. 필링 활성화/비활성화
         for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
@@ -207,6 +205,7 @@ public class GameManagerEx
         isRunning = false;
         order.Clear();
 
+
         //정산
         todayRevenue = CurData.money - yesterdayProfit;
         CurData.money -= ingredientCost;
@@ -224,6 +223,8 @@ public class GameManagerEx
         hasInitialized = false;
 
     }
+
+    #endregion
 
     #region 주문
     public void acceptOrder(Dictionary<FillingType, int> orders)
