@@ -68,8 +68,7 @@ public class FishBunController : MonoBehaviour,
                 DisplateController.Set(gameObject);
                 transform.position = spawnPos;
 
-                //몰드 비우기
-                parentMold.GetComponent<MoldController>().IsFilled = false;
+
             }
             else
             {
@@ -79,6 +78,9 @@ public class FishBunController : MonoBehaviour,
                 Destroy(gameObject);
 
             }
+
+            //몰드 비우기
+            parentMold.GetComponent<MoldController>().IsFilled = false;
 
 
         }
@@ -104,7 +106,7 @@ public class FishBunController : MonoBehaviour,
         //게임 오브젝트 : 구조&이름
         gameObject.transform.SetParent(parentMold.transform);
         gameObject.name = $"{++numsOfFisBun}";
-        Debug.Log($"{gameObject.name} 붕어빵 생성");
+        //Debug.Log($"{gameObject.name} 붕어빵 생성");
 
         //위치 조정
         transform.position = spawnPos;

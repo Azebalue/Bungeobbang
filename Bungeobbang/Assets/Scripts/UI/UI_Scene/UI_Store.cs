@@ -37,7 +37,7 @@ public class UI_Store : UI_Base
 
         MoneyText.text = "µ·";
         TitleText.text = "»óÁ¡";
-        MoneyNum.text = Managers.Game.CurData.money.ToString("D0")+" ¿ø";
+        MoneyNum.text = Managers.Game.Money.ToString("N0")+" ¿ø";
 
         AddEvent(NextDayButton.gameObject, Managers.Game.StartNextDay);
 

@@ -38,7 +38,7 @@ public class UI_DayEnd : UI_Base
         CheckButton = Find<Button>(gameObject, "CheckButton");
 
 
-        TitleText.text = $"{Managers.Game.CurData.day} 일차";
+        TitleText.text = $"{Managers.Game.Day} 일차";
         int size = GetEnumSize(typeof(Panels));
         for (int index = 0; index < size  * 2; ++index)
         {

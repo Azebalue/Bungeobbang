@@ -10,20 +10,40 @@ public class GameData
     public int money;
     //public int spritPiece;
 
-    //도감
-
     //해금된 재료 개수
     public int numOfFilling;
 }
 
 public class GameManagerEx
 {
-     GameData gameData = new GameData();
-    public GameData CurData
+    GameData gameData = new GameData();
+    GameData CurData
     {
         get { return gameData; }
         set { gameData = value; }
     }
+
+    #region GameData
+    public int Day
+    {
+        get { return CurData.day; }
+        set { CurData.day = value; }
+    }
+
+    public int Money
+    {
+        get { return CurData.money; }
+        set {
+            Debug.Log($"돈 바뀜 {value}");
+            CurData.money = value; }
+    }
+
+    public int NumOfFilling
+    {
+        get { return CurData.numOfFilling; }
+        set { CurData.numOfFilling = value; }
+    }
+    #endregion
 
     #region 시간 관련 변수
     readonly int startHour = 18;
@@ -36,13 +56,10 @@ public class GameManagerEx
 
 
     public float delta; //시간
-    int gameSpeed = 1; //게임 속도
-    public int GameSpeed
+    float gameSpeed = 1f; //게임 속도
+    public float GameSpeed
     {
-        get
-        {
-            return gameSpeed * Managers.Instance._gameSpeed;
-        }
+        get { return gameSpeed * Managers.Instance._gameSpeed; }
     }
 
     //운영 관련 변수
@@ -50,6 +67,15 @@ public class GameManagerEx
     bool hasFinalized= false; //가게 운영 끝처리했는지
     public bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
 
+    public int numsOfCurCustomers = 0;
+    public bool isAllExited
+    {
+        get { return numsOfCurCustomers == 0; }
+    }
+    public bool isClosingTime
+    {
+        get { return hour >= endHour; }
+    }
     #endregion
 
     #region 게임 요소 관련 변수
@@ -65,13 +91,11 @@ public class GameManagerEx
         }
     }
 
-    const int numsOfCustomers = 3;
-    GameObject[] customerArr = new GameObject[numsOfCustomers];
     GameObject[] fillingArr = new GameObject[GetEnumSize(typeof(FillingType))];
+
     #endregion
 
-    #region 운영 결과 관련 변수
-
+    #region 통계 관련 변수
     public int totalFishBunsSold;      // 판매한 붕어빵 수
     public int totalCustomers;         // 방문한 손님 수
 
@@ -83,18 +107,14 @@ public class GameManagerEx
         set { ingredientCost = value; }
     }
 
-    // 오늘 매출
     public int todayRevenue;
 
     public int netProfit //오늘 순수익
     {
         get {
-            //Debug.Log($"netProfit: {todayRevenue} - {ingredientCost} = {todayRevenue - ingredientCost}");
+            Debug.Log($"netProfit: {todayRevenue} - {ingredientCost} = {todayRevenue - ingredientCost}");
             return  (todayRevenue - ingredientCost); }
     }
-
-
-
     #endregion
 
     //현재 주문 
@@ -112,16 +132,11 @@ public class GameManagerEx
     {
         Debug.Log("게임 초기화");
 
-        //게임 시작 1회에만, 화면 상 게임 오브젝트 찾아서 변수랑 맵핑/바인딩
-        //1. 손님(customer) 오브젝트
-        for (int i = 0; i < numsOfCustomers; ++i)
-            customerArr[i] = FindObject(ParentGo, $"customer{i + 1}", true); 
-
-        //2. 필링(fillings) 오브젝트
+        //1. 필링(fillings) 오브젝트
         for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
-            fillingArr[i] = FindObject(ParentGo, $"{(FillingType)i}", true); 
+            fillingArr[i] = FindObject(ParentGo, $"{(FillingType)i}", true);
 
-        //3. 데이터 초기화
+        //2. 데이터 초기화
         CurData.day = 0;
         CurData.numOfFilling = 4;
         CurData.money = 0;
@@ -129,6 +144,8 @@ public class GameManagerEx
         isRunning = true;
         hasInitialized = false;
         hasFinalized = false;
+
+        numsOfCurCustomers = 0;
 
     }
 
@@ -144,9 +161,8 @@ public class GameManagerEx
             InitDaily();
             hasInitialized = true;
         }
-
-        //하루 끝 처리 (1회성)
-        else if (hour >= endHour )
+        //하루 끝 처리 (1회성) 조건: 운영 종료 & 남은 손님 없음
+        else if ( isClosingTime == true && isAllExited == true)
         {
 
             if (hasFinalized == false)
@@ -179,8 +195,6 @@ public class GameManagerEx
         ingredientCost = 0;
         yesterdayProfit = CurData.money;
 
-
-
         //2. UI화면
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_Game>();
@@ -207,8 +221,11 @@ public class GameManagerEx
 
 
         //정산
-        todayRevenue = CurData.money - yesterdayProfit;
-        CurData.money -= ingredientCost;
+        //netProfit = todayRevenue - ingredientCost;
+        todayRevenue = Money - yesterdayProfit;
+        Debug.Log($"현재 돈: {Money} - 어제 매출{yesterdayProfit}");
+        Debug.Log($"오늘 매출: {todayRevenue} - 재료비: {ingredientCost} = 오늘 순수익 {netProfit}");
+        Money -= ingredientCost;
 
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_DayEnd>();
@@ -265,6 +282,8 @@ public class GameManagerEx
         foreach (var order in orders)
         {
             //Debug.Log($"주문 취소 {order.Key}: {Order[order.Key]} - {order.Value}");
+            if (Order.ContainsKey(order.Key) == false)
+                return;
 
             Order[order.Key] -= order.Value;
             //Debug.Log($"주문 취소 결과 {Order[order.Key]}");

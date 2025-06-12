@@ -5898,7 +5898,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0014a6c023527e146bcfc024c9258c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameSpeed: 2
+  _gameSpeed: 1.8
   reactionDelayTime: 1
 --- !u!82 &1886732828
 AudioSource:

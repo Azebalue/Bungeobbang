@@ -49,10 +49,10 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
     //붕어빵 주문 개수 범위
     int minFishBun = 1;
     int maxFishBun = 3;
-
+/*
     //붕어빵 종류 개수 범위
     const int minOrderType = 1;
-    const int maxOrderType = 3;
+    const int maxOrderType = 3;*/
 
     int orderAngryPoint; //주문 관련 불만도
     int angryPoint; //종합 불만도
@@ -91,7 +91,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
     int reactionTime = 1;
     #endregion
 
-    bool didInstatiated = false;
+    bool hasExited = false;
 
     public void OnPointerClick(PointerEventData eventData)
     {
@@ -115,12 +115,8 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
     void Update()
     {
         if (Managers.Game.isRunning == false)
-        {
-            customer.SetActive(false);
-            UI_order.gameObject.SetActive(false);
             return;
-        }
-            
+
 
         if (AngryPoint < 100)
         {
@@ -128,10 +124,11 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            if(didInstatiated == false)
+            if (hasExited == false)
             {
+                Debug.Log("화나서 퇴장");
                 StartCoroutine(Exit(true)); //퇴장
-                didInstatiated = true;
+                hasExited = true;
             }
         }
 
@@ -160,6 +157,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
         pay = 0;
         didAcceptOrder = false;
+        ++Managers.Game.numsOfCurCustomers;
     }
 
     public void Order()
@@ -172,7 +170,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         List<int> orderableFillingType = new List<int>();
 
         //주문 가능한 맛 범위(orderableFillingType)에 대해 초기화
-        for (int i = 0; i < Managers.Game.CurData.numOfFilling; ++i)
+        for (int i = 0; i < Managers.Game.NumOfFilling; ++i)
             orderableFillingType.Add(i);
 
         //1. 주문할 붕어빵 개수
@@ -234,7 +232,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
             //지불할 돈 적립
             pay += Define.FillingPrice[(int)filling];
-            //Debug.Log($"지금까지 {pay}원 어치 먹음 ");
+            Debug.Log($"지금까지 {pay}원 어치 먹음 ");
 
             //order 딕셔너리 정리
             if (--order[filling] == 0)
@@ -256,7 +254,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         {
             //다른 맛을 주면 불만 미세하게 down
             orderAngryPoint -= disappointPoint;
-
+           
             //환불해줘야 하나
 
         }
@@ -293,13 +291,15 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         yield return new WaitForSeconds(reactionTime);
 
         //돈 내기
-        Managers.Game.CurData.money += pay;
+        Managers.Game.Money += pay;
 
         //손님 비활성화
         customer.gameObject.SetActive(false);
-
+        hasExited = false;
+        --Managers.Game.numsOfCurCustomers;
         //Debug.Log($" {gameObject.name} Exit 끝");
-        
+
+
         //다음 손님
         StartCoroutine(InstatiateCustomer());
         yield break;
@@ -313,7 +313,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     IEnumerator InstatiateCustomer()
     {
-        if (Managers.Game.isRunning == false)
+        if (Managers.Game.isClosingTime == true)
             yield break;
 
         InitCustomer();

@@ -13,8 +13,8 @@ public class MoldController : MonoBehaviour
             return isFilled;
         }
         set {
-            if (value == false)
-                Debug.Log($"{gameObject.name} ¸ôµå ºñ¿öÁü");
+/*            if (value == false)
+                Debug.Log($"{gameObject.name} ¸ôµå ºñ¿öÁü");*/
             isFilled = value;
         }
 
