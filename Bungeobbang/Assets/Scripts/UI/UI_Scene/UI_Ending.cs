@@ -41,7 +41,7 @@ public class UI_Ending : UI_Base
         }
         else if(Ending == EndingType.Normal)
         {
-            lines = Define.ClearEndingText;
+            lines = Define.NormalEndingText;
         }
         else
         {

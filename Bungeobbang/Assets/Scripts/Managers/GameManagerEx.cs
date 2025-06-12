@@ -140,7 +140,7 @@ public class GameManagerEx
     //게임 생성 시 초기화 메서드
     public void InitGame()
     {
-        Debug.Log("게임 초기화");
+        Debug.Log("게임 초기화 & 튜토리얼 씬");
 
         //1. 필링(fillings) 오브젝트
         for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)

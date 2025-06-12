@@ -5900,8 +5900,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _gameSpeed: 20
   reactionDelayTime: 1
-  money: 5000
-  day: 4
+  money: 1000
+  day: 3
 --- !u!82 &1886732828
 AudioSource:
   m_ObjectHideFlags: 0
