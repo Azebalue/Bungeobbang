@@ -17,7 +17,7 @@ public class UI_Intro : UI_Base
     }
 
 
-    #region MainMenu_ButtonMethods
+    #region 버튼 별 메서드
 
     public void StartBtn()
     {
@@ -34,15 +34,6 @@ public class UI_Intro : UI_Base
 
     }
 
-    public void QuitBtn()
-    {
-#if UNITY_EDITOR
-        //에디터에서 실행할 때
-        UnityEditor.EditorApplication.isPlaying = false; //에디터 실행 중단
-#else
-        Application.Quit();
-#endif
-    }
 
     #endregion
 }

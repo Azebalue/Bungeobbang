@@ -1,6 +1,5 @@
-using System.Collections;
-using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ResourceManager 
 {
@@ -46,6 +45,7 @@ public class ResourceManager
         }
         
     }
+
 
     public CustomerData LoadCustomerSO(CustomerType customer)
     {

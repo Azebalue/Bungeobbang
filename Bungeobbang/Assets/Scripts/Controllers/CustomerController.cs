@@ -126,7 +126,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         {
             if (hasExited == false)
             {
-                Debug.Log("화나서 퇴장");
+                //Debug.Log("화나서 퇴장");
                 StartCoroutine(Exit(true)); //퇴장
                 hasExited = true;
             }
@@ -206,6 +206,10 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
     public void Eat(FillingType filling, QualityStatus baking)
     {
+        //주문 안받으면 안먹음
+        if(didAcceptOrder == false)
+             return; 
+
         Managers.Game.serveOrder(order, filling);
 
         //분노Point 판정
@@ -232,7 +236,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
             //지불할 돈 적립
             pay += Define.FillingPrice[(int)filling];
-            Debug.Log($"지금까지 {pay}원 어치 먹음 ");
+            //Debug.Log($"지금까지 {pay}원 어치 먹음 ");
 
             //order 딕셔너리 정리
             if (--order[filling] == 0)

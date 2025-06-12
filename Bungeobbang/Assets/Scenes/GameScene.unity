@@ -5898,8 +5898,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0014a6c023527e146bcfc024c9258c5c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _gameSpeed: 1.8
+  _gameSpeed: 20
   reactionDelayTime: 1
+  money: 5000
+  day: 4
 --- !u!82 &1886732828
 AudioSource:
   m_ObjectHideFlags: 0

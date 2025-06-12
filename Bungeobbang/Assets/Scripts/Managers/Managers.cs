@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 public class Managers : MonoBehaviour
 {
@@ -20,6 +18,8 @@ public class Managers : MonoBehaviour
     #region 조작
     public float _gameSpeed = 1.8f; //게임 속도
     public int reactionDelayTime = 1; //반응하는 속도
+    public int money = 5000; //돈
+    public int day = 3; 
 
 
     #endregion
@@ -44,6 +44,7 @@ public class Managers : MonoBehaviour
 
         }
 
+        //DontDestroyOnLoad(Instance);
     }
 
 }

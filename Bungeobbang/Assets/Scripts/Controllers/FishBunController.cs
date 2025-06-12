@@ -80,6 +80,7 @@ public class FishBunController : MonoBehaviour,
             }
 
             //¸ôµå ºñ¿ì±â
+            Debug.Log($"{hit.collider.name}¿¡ ºÎµúÈû");
             parentMold.GetComponent<MoldController>().IsFilled = false;
 
 

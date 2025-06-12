@@ -26,13 +26,14 @@ public class GameManagerEx
     #region GameData
     public int Day
     {
-        get { return CurData.day; }
+        get { 
+            return CurData.day + Managers.Instance.day; }
         set { CurData.day = value; }
     }
 
     public int Money
     {
-        get { return CurData.money; }
+        get { return CurData.money + Managers.Instance.money; }
         set {
             Debug.Log($"돈 바뀜 {value}");
             CurData.money = value; }
@@ -117,6 +118,15 @@ public class GameManagerEx
     }
     #endregion
 
+    #region 엔딩 관련 변수
+    int clearCondition = 40000;
+    int endingDay = 5;
+    
+    bool isEndingDay { get { return Day >= endingDay;  } }
+    bool isOver { get { return Money <= 0;  } }
+    bool isClear { get { return Money > clearCondition; } }
+    #endregion
+
     //현재 주문 
     Dictionary<FillingType, int> order = new Dictionary<FillingType, int>();
     public Dictionary<FillingType, int> Order
@@ -146,6 +156,7 @@ public class GameManagerEx
         hasFinalized = false;
 
         numsOfCurCustomers = 0;
+
 
     }
 
@@ -214,21 +225,25 @@ public class GameManagerEx
 
     void FinalizeDaily()
     {
-        Debug.Log("2. 하루 끝 ");
+        Debug.Log("2. 하루 끝 & 엔딩 체크");
 
         isRunning = false;
         order.Clear();
 
-
         //정산
-        //netProfit = todayRevenue - ingredientCost;
         todayRevenue = Money - yesterdayProfit;
-        Debug.Log($"현재 돈: {Money} - 어제 매출{yesterdayProfit}");
-        Debug.Log($"오늘 매출: {todayRevenue} - 재료비: {ingredientCost} = 오늘 순수익 {netProfit}");
+        //Debug.Log($"현재 돈: {Money} - 어제 매출{yesterdayProfit}");
+        //Debug.Log($"오늘 매출: {todayRevenue} - 재료비: {ingredientCost} = 오늘 순수익 {netProfit}");
         Money -= ingredientCost;
+
+        //엔딩 체크
+        if (Managers.Game.IsEnding() == true)
+            return;
 
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_DayEnd>();
+
+
 
     }
 
@@ -236,8 +251,42 @@ public class GameManagerEx
     {
         Debug.Log("3. 다음 날로 넘어가기");
 
+
         isRunning = true;
         hasInitialized = false;
+
+
+    }
+
+    bool IsEnding()
+    {
+        Debug.Log("IsEnding 진입");
+
+        if (isOver == true)
+        {
+            Managers.UI.CloseUI();
+            Managers.UI.ShowUI<UI_Ending>().SetInfo(EndingType.Over);
+            return true;
+        }
+        else
+        {
+            Debug.Log($"{Day} VS {endingDay}");
+
+            if (isEndingDay == false)
+                return false;
+
+            Debug.Log("5일차다");
+
+            Managers.UI.CloseUI();
+
+            if (isClear == true)
+                Managers.UI.ShowUI<UI_Ending>().SetInfo(EndingType.Clear);
+            else
+                Managers.UI.ShowUI<UI_Ending>().SetInfo(EndingType.Normal);
+
+            return true;
+        }
+
 
     }
 
@@ -297,4 +346,18 @@ public class GameManagerEx
 
     }
     #endregion
+
+    #region 기타
+    public void QuitGame()
+    {
+    #if UNITY_EDITOR
+        //에디터에서 실행할 때
+        UnityEditor.EditorApplication.isPlaying = false; //에디터 실행 중단
+    #else
+        Application.Quit();
+    #endif
+    }
+
+    #endregion
+
 }
