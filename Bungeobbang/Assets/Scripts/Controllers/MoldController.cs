@@ -5,7 +5,7 @@ public class MoldController : MonoBehaviour
     , IPointerClickHandler
 {
 
-    bool isFilled = false;
+    public bool isFilled = false;
     public bool IsFilled
     {
         get

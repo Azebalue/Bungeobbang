@@ -40,8 +40,9 @@ public static class Util
         if( boolVar == condition)
         {
             action();
-            Debug.Log("한번만 실행");
             boolVar = !boolVar;
+            Debug.Log($"한번만 실행: {condition} != {boolVar}");
+
         }
     }
     #region Find계열함수

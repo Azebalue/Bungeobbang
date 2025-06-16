@@ -143,7 +143,7 @@ public class GameManagerEx
     //게임 생성 시 초기화 메서드
     public void InitGame()
     {
-        Debug.Log("게임 초기화 & 튜토리얼 씬");
+        Debug.Log("게임 초기화");
 
         //1. 필링(fillings) 오브젝트
         for (int i = 0; i < GetEnumSize(typeof(FillingType)); ++i)
@@ -155,8 +155,6 @@ public class GameManagerEx
         CurData.money = 0;
 
         isRunning = true;
-/*        hasInitialized = false;
-        hasFinalized = false;*/
 
         numsOfCurCustomers = 0;
 
@@ -238,7 +236,6 @@ public class GameManagerEx
         Debug.Log("1. 하루 시작");
 
         //1. 데이터 초기화
-        //hasFinalized = false;
         delta = 0; 
         ++CurData.day;
 
@@ -277,9 +274,7 @@ public class GameManagerEx
         //Debug.Log($"오늘 매출: {todayRevenue} - 재료비: {ingredientCost} = 오늘 순수익 {netProfit}");
         Money -= ingredientCost;
 
-        //엔딩 체크
-        if (Managers.Game.IsEnding() == true)
-            return;
+
 
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_DayEnd>();
@@ -292,14 +287,16 @@ public class GameManagerEx
     {
         Debug.Log("3. 다음 날로 넘어가기");
 
+/*        //엔딩
+        if (Managers.Game.IsEnding() == true)
+            return;*/
 
         isRunning = true;
-/*        hasInitialized = false;*/
 
 
     }
 
-    bool IsEnding()
+    public bool IsEnding()
     {
         Debug.Log("IsEnding 진입");
 
@@ -327,7 +324,6 @@ public class GameManagerEx
 
             return true;
         }
-
 
     }
 

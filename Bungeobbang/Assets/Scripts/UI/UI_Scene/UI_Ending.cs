@@ -18,15 +18,11 @@ public class UI_Ending : UI_Base
         img = Util.Find<Image>(gameObject, "Image");
         TMP = Util.Find<TextMeshProUGUI>(gameObject, "Text (TMP)");
 
-        //배경
-        if (img == null)
-            Debug.Log("배경 널이래");
-
         img.sprite = Managers.Resource.LoadSprite($"Ending/{ImagePath}");
 
         //대사
         index = 0;
-        nextLine();
+        TMP.text = lines[index];
         gameObject.AddEvent(nextLine);
     }
 

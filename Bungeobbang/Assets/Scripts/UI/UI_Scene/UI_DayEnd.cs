@@ -59,6 +59,10 @@ public class UI_DayEnd : UI_Base
 
     private void CheckButtonFunc()
     {
+        //¿£µù
+        if (Managers.Game.IsEnding() == true)
+            return;
+
         Managers.UI.CloseUI();
         Managers.UI.ShowUI<UI_Store>();
     }
