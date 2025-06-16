@@ -1,3 +1,3 @@
 # Bungeobbang
  
-2D, unity 6.0.39f1
+2D, unity 6000.0.39f1
