@@ -64,8 +64,11 @@ public class GameManagerEx
     }
 
     //운영 관련 변수
-    bool hasInitialized = false; //가게 운영 시작처리했는지
-    bool hasFinalized= false; //가게 운영 끝처리했는지
+    DayState dayState = DayState.Opening;
+
+    /*bool hasInitialized = false; //가게 운영 시작처리했는지
+    bool hasFinalized= false; //가게 운영 끝처리했는지*/
+    bool didAlertClosingTime = false; // 가게 운영종료 알려줬는지
     public bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
 
     public int numsOfCurCustomers = 0;
@@ -152,8 +155,8 @@ public class GameManagerEx
         CurData.money = 0;
 
         isRunning = true;
-        hasInitialized = false;
-        hasFinalized = false;
+/*        hasInitialized = false;
+        hasFinalized = false;*/
 
         numsOfCurCustomers = 0;
 
@@ -166,7 +169,39 @@ public class GameManagerEx
         if (isRunning == false)
             return;
 
-        //하루 시작 처리 (1회성)
+        switch (dayState)
+        {
+            case DayState.Opening:
+                InitDaily();
+                dayState = DayState.Running;
+                break;
+
+            case DayState.Running:
+
+                //시간 측정
+                delta += Time.deltaTime * GameSpeed;
+
+                if(isClosingTime == true)
+                {
+
+                    ExecuteOnce(
+                        () => { Managers.UI.ShowUI<UI_AlertClosingTime>(false); }, 
+                        ref didAlertClosingTime, false);
+
+                    if(isAllExited == true)
+                        dayState = DayState.Closing;
+                }
+
+                break;
+
+            case DayState.Closing:
+                FinalizeDaily();
+                dayState = DayState.Opening;
+
+                break;
+        }
+
+        /*//하루 시작 처리 (1회성)
         if (hasInitialized == false)
         {
             InitDaily();
@@ -175,7 +210,6 @@ public class GameManagerEx
         //하루 끝 처리 (1회성) 조건: 운영 종료 & 남은 손님 없음
         else if ( isClosingTime == true && isAllExited == true)
         {
-
             if (hasFinalized == false)
             {
                 FinalizeDaily();
@@ -188,7 +222,14 @@ public class GameManagerEx
         {
             //가게 운영: 시간 계산
             delta += Time.deltaTime * GameSpeed;
-        }
+
+            //가게 종료 알리기
+            if (isClosingTime == true && didAlertClosingTime == false)
+            {
+                Managers.UI.ShowUI<UI_AlertClosingTime>(false);
+                didAlertClosingTime = true;
+            }
+        }*/
     }
 
     #region 하루 루틴 처리
@@ -197,7 +238,7 @@ public class GameManagerEx
         Debug.Log("1. 하루 시작");
 
         //1. 데이터 초기화
-        hasFinalized = false;
+        //hasFinalized = false;
         delta = 0; 
         ++CurData.day;
 
@@ -205,6 +246,7 @@ public class GameManagerEx
         totalCustomers = 0;         
         ingredientCost = 0;
         yesterdayProfit = CurData.money;
+        didAlertClosingTime = false;
 
         //2. UI화면
         Managers.UI.CloseUI();
@@ -226,7 +268,6 @@ public class GameManagerEx
     void FinalizeDaily()
     {
         Debug.Log("2. 하루 끝 & 엔딩 체크");
-
         isRunning = false;
         order.Clear();
 
@@ -253,7 +294,7 @@ public class GameManagerEx
 
 
         isRunning = true;
-        hasInitialized = false;
+/*        hasInitialized = false;*/
 
 
     }

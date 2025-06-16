@@ -14,6 +14,7 @@ public class UI_Ending : UI_Base
     protected override void Init()
     {
         Debug.Log("UI_Ending-Init");
+
         img = Util.Find<Image>(gameObject, "Image");
         TMP = Util.Find<TextMeshProUGUI>(gameObject, "Text (TMP)");
 

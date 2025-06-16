@@ -1,4 +1,11 @@
-using System;
+public enum DayState
+{
+    Waiting,
+    Opening,
+    Running,
+    Closing,
+    //Finalized,
+}
 
 public enum CookingState
 {

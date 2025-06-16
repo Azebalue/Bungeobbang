@@ -34,30 +34,16 @@ public static class Util
         return component;
     }
 
-/*    //세자리마다 ,를 넣은 형태로 변환하는 메서드
-    public static string FormatMoney(int num)
+    //update에서 한 번만 실행
+    public static void ExecuteOnce(Action action, ref bool boolVar, bool condition = true)
     {
-        //길이 알아내기
-        int length = 1;
-        for (int i = 1; (num / Mathf.Pow(10, i-1)) > 0; ++i)
+        if( boolVar == condition)
         {
-            ++length;
-
-            if (i / 3 == 0)
-                ++length;
-
+            action();
+            Debug.Log("한번만 실행");
+            boolVar = !boolVar;
         }
-        Debug.Log($"{num}: 변형 길이 {length} ");
-
-        //변형하기
-        string money;
-        for(int i = length; i >= 0; --i)
-        {
-            money[i] = num;
-        }
-
-        return num.ToString();
-    }*/
+    }
     #region Find계열함수
 
 

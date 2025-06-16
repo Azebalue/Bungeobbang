@@ -1,11 +1,12 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class UIManager 
 {
     GameObject scene;
-    Stack<GameObject> popup;
+    Stack<GameObject> popup = new Stack<GameObject>();
     int popup_order = 10; //팝업 순서 조절 용
 
     //UI오브젝트들의 부모가 되는 게임 오브젝트UIRoot
@@ -27,7 +28,7 @@ public class UIManager
 
 
     //UI프리팹을 생성하는 메서드
-    public T ShowUI<T>(string name = null, bool isScene = true, Transform parent = null)
+    public T ShowUI<T>(bool isScene = true, string name = null,  Transform parent = null)
         where T : UI_Base
     {
         //이름이 null이면 타입 이름 채택
@@ -49,8 +50,11 @@ public class UIManager
         }
         else
         {
-            //필요하면 작성
-            ++popup_order;
+            //스택
+            popup.Push(prefab);
+            prefab.GetComponent<Canvas>().sortingOrder
+                = ++popup_order;
+
         }
 
         return prefab.GetOrAddComponent<T>();
@@ -64,6 +68,7 @@ public class UIManager
         }
         else
         {
+
             Object.Destroy(popup.Peek());
             --popup_order;
             popup.Pop();

@@ -121,15 +121,13 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         if (AngryPoint < 100)
         {
             UI_order.slider.value = AngryPoint;
+
         }
         else
         {
-            if (hasExited == false)
-            {
-                //Debug.Log("È­³ª¼­ ÅðÀå");
-                StartCoroutine(Exit(true)); //ÅðÀå
-                hasExited = true;
-            }
+            Util.ExecuteOnce(
+                () => { StartCoroutine(Exit(true)); },
+                ref hasExited, false);
         }
 
 
