@@ -6,8 +6,8 @@ public class UI_Intro : MonoBehaviour
 
     void Update()
     {
-        if(Input.GetMouseButtonDown(0))
-            SceneManager.LoadScene("GameScene");
+        if (Input.GetMouseButtonDown(0))
+            Managers.UI.ShowUI<UI_HowToPlay>();
 
 
     }
