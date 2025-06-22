@@ -72,8 +72,13 @@ public class FishBunController : MonoBehaviour,
             }
             else
             {
-                if(hit.collider.CompareTag("customer"))
+                if (hit.collider.CompareTag("customer"))
+                {
+                    Debug.Log($"{hit.collider.name}¿¡°Ô ºØ¾î»§ Á¦°ø");
+                    DisplateController.Reset(fillingType);
                     ServeFishBun(hit.transform.gameObject);
+
+                }
 
                 Destroy(gameObject);
 

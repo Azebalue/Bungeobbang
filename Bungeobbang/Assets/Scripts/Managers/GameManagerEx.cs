@@ -66,15 +66,16 @@ public class GameManagerEx
     //운영 관련 변수
     DayState dayState = DayState.Opening;
 
-    /*bool hasInitialized = false; //가게 운영 시작처리했는지
-    bool hasFinalized= false; //가게 운영 끝처리했는지*/
     bool didAlertClosingTime = false; // 가게 운영종료 알려줬는지
     public bool isRunning = true; //가게 운영 중인지(정지 여부 포함)
 
     public int numsOfCurCustomers = 0;
     public bool isAllExited
     {
-        get { return numsOfCurCustomers == 0; }
+        get {
+
+            //Debug.Log($"{numsOfCurCustomers}명 존재");
+            return numsOfCurCustomers == 0; }
     }
     public bool isClosingTime
     {

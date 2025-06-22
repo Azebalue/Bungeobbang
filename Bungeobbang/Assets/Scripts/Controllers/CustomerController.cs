@@ -299,7 +299,7 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
         customer.gameObject.SetActive(false);
         hasExited = false;
         --Managers.Game.numsOfCurCustomers;
-        //Debug.Log($" {gameObject.name} Exit 끝");
+        Debug.Log($" {gameObject.name} Exit 끝");
 
 
         //다음 손님

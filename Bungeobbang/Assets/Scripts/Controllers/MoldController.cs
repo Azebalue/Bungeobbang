@@ -5,7 +5,7 @@ public class MoldController : MonoBehaviour
     , IPointerClickHandler
 {
 
-    public bool isFilled = false;
+    bool isFilled = false;
     public bool IsFilled
     {
         get
@@ -33,11 +33,17 @@ public class MoldController : MonoBehaviour
         if (Managers.Game.isRunning == false || ToolController.selectedTool == null)
             return;
 
-        if (IsFilled == false)
+/*        if (IsFilled == false)
         {
-            InstanciateFishBun();
+            
             IsFilled = true;
-        }
+        }*/
+        Util.ExecuteOnce(
+            () => {
+                Debug.Log("»ý¼º");
+                InstanciateFishBun(); },
+            ref isFilled, false
+            );
     }
 
     void InstanciateFishBun()

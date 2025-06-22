@@ -63,7 +63,8 @@ public class UI_Game : UI_Base
     void settingsBtnFunc()
     {
         //Managers.Game.
-        //Managers.UI.ShowUI<>();
+        Managers.UI.CloseUI();
+        Managers.UI.ShowUI<UI_Settings>();
     }
 
     static void orderUpdate()

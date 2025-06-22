@@ -106,6 +106,13 @@ public class Define
         "홍보",
     };
 
+    public static string[] UI_Settings =
+    {
+        "나가기",
+        "돌아가기",
+
+    };
+
     public static string[] EndingImagePath =
     {
         "OverEndingScene",

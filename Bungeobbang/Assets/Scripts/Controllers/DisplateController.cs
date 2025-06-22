@@ -53,6 +53,11 @@ public class DisplateController : MonoBehaviour
 
     }
 
+    static public void Reset(FillingType fillingType)
+    {
+        --numsOfFishBun[(int)fillingType];
+    }
+    
     void Init()
     {
         for(int i = 0; numsOfFishBun.Length > i; i++)
