@@ -185,10 +185,14 @@ public class CustomerController : MonoBehaviour, IPointerClickHandler
 
             //°³¼ö ·£´ý
             int _numsOfFishBun; // fillingType¸ÀÀ¸·Î ½ÃÅ³ ºØ»§ °³¼ö
-            //³²Àº ºØ¾î»§ °³¼ö 1°³ ÀÌ»óÀÏ ¶§¿¡¸¸ ·£´ý
-            if (fishbun > 1)
-                _numsOfFishBun = UnityEngine.Random.Range(1, fishbun - 1);
-            else
+            /*            //³²Àº ºØ¾î»§ °³¼ö 1°³ ÀÌ»óÀÏ ¶§¿¡¸¸ ·£´ý
+                        if (fishbun > 1)
+                            _numsOfFishBun = UnityEngine.Random.Range(1, fishbun - 1);
+                        else
+                            _numsOfFishBun = 1;*/
+
+            _numsOfFishBun = Random.Range(1, fishbun);
+            if(numsOfFishBun == 0)
                 _numsOfFishBun = 1;
 
             fishbun -= _numsOfFishBun;
